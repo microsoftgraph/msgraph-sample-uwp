@@ -4,10 +4,10 @@ In this lab you will create a Universal Windows Platform (UWP) application using
 
 ## In this lab
 
-* [Create an Azure AD native application with the App Registration Portal](./Demos/01-arp-app)
-* [Create an UWP native application](./Demos/02-create-app)
-* [Extend the UWP app for Azure AD Authentication](./Demos/03-add-aad-auth)
-* [Integrate Microsoft Graph into the Application](./Demos/04-add-msgraph)
+* [Create an Azure AD native application with the App Registration Portal](#exercise1)
+* [Create an UWP native application](#exercise2)
+* [Extend the UWP app for Azure AD Authentication](#exercise3)
+* [Integrate Microsoft Graph into the Application](#exercise4)
 
 ## Prerequisites
 
