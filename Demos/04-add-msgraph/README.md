@@ -19,7 +19,7 @@ In this demo you will incorporate the Microsoft Graph into the application. For 
     1. Add the three members to the class to store the subject and dates related to the event. The final code for the `CalendarEvent` class should be as follows:
 
         ```cs
-        public class EventModel
+        public class CalendarEvent
         {
           public string Subject { get; set; }
 

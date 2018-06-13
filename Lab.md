@@ -332,7 +332,6 @@ With the application created, now extend it to support authentication with Azure
           var token = await AuthenticationHelper.GetTokenForUserAsync();
           if (token != null)
           {
-            Debug.WriteLine("Token: " + token);
             this._emailAddress = (string)_settings.Values["userEmail"];
             this._displayName = (string)_settings.Values["userName"];
             return true;
@@ -425,7 +424,7 @@ The last step is to incorporate the Microsoft Graph into the application. For th
     1. Add the three members to the class to store the subject and dates related to the event. The final code for the `CalendarEvent` class should be as follows:
 
         ```cs
-        public class EventModel
+        public class CalendarEvent
         {
           public string Subject { get; set; }
 
