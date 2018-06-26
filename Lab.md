@@ -1,4 +1,4 @@
-# Build Windows native applications with the Microsoft Graph
+# Build UWP apps with the Microsoft Graph .NET SDK
 
 In this lab you will create a Universal Windows Platform (UWP) application using the Azure AD v2 authentication endpoint and the Microsoft Authentication Library (MSAL) to access data in Office 365 using the Microsoft Graph.
 
