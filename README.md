@@ -15,6 +15,10 @@ In this lab you will create a UWP application using the Azure AD v2 authenticati
 * [Extend the UWP app for Azure AD Authentication](./Demos/03-add-aad-auth)
 * [Integrate Microsoft Graph into the Application](./Demos/04-add-msgraph)
 
+## Watch the Module
+
+This module has been recorded and is available in the Office Development YouTube channel: [Build UWP apps with the Microsoft Graph .NET SDK](https://youtu.be/XNxBUmqcf6c)
+
 ## Contributors
 
 |        Roles         |                        Author(s)                        |
@@ -26,6 +30,7 @@ In this lab you will create a UWP application using the Azure AD v2 authenticati
 
 | Version |        Date        |                    Comments                    |
 | ------- | ------------------ | ---------------------------------------------- |
+| 1.2     | June 28, 2018      | Added screencast.                              |
 | 1.1     | June 22, 2018      | Rewritten to use latest guidance.              |
 | 1.0     | ~November 24, 2017 | Add Microsoft Graph related product breakouts. |
 
