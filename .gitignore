@@ -172,3 +172,6 @@ FakesAssemblies/
 
 # MacOS files
 **.DS_Store
+
+## VS Code
+.vscode/

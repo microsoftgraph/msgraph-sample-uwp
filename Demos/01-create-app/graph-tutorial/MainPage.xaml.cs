@@ -25,6 +25,36 @@ namespace graph_tutorial
         public MainPage()
         {
             this.InitializeComponent();
+
+            // Initialize auth state to false
+            SetAuthState(false);
+
+            // Navigate to HomePage.xaml
+            RootFrame.Navigate(typeof(HomePage));
+        }
+
+        private void SetAuthState(bool isAuthenticated)
+        {
+            (App.Current as App).IsAuthenticated = isAuthenticated;
+
+            // Toggle controls that require auth
+            Calendar.IsEnabled = isAuthenticated;
+        }
+
+        private void NavView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
+        {
+            var invokedItem = args.InvokedItem as string;
+
+            switch (invokedItem.ToLower())
+            {
+                case "calendar":
+                    throw new NotImplementedException();
+                    break;
+                case "home":
+                default:
+                    RootFrame.Navigate(typeof(HomePage));
+                    break;
+            }
         }
     }
 }

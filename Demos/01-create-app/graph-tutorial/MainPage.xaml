@@ -5,10 +5,37 @@
     xmlns:local="using:graph_tutorial"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:graphControls="using:Microsoft.Toolkit.Uwp.UI.Controls.Graph"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
+        <NavigationView x:Name="NavView"
+            IsSettingsVisible="False"
+            ItemInvoked="NavView_ItemInvoked">
 
+            <NavigationView.Header>
+                <graphControls:AadLogin x:Name="Login"
+                    HorizontalAlignment="Left"
+                    View="SmallProfilePhotoLeft"
+                    AllowSignInAsDifferentUser="False"
+                    />
+            </NavigationView.Header>
+
+            <NavigationView.MenuItems>
+                <NavigationViewItem Content="Home" x:Name="Home" Tag="home">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE10F;"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Calendar" x:Name="Calendar" Tag="calendar">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE163;"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.MenuItems>
+
+            <Frame x:Name="RootFrame" Margin="24, 0" />
+        </NavigationView>
     </Grid>
 </Page>
