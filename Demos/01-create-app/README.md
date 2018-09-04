@@ -82,7 +82,10 @@ Next, define the layout for the main page. Open `MainPage.xaml` and replace its 
                 </NavigationViewItem>
             </NavigationView.MenuItems>
 
-            <Frame x:Name="RootFrame" Margin="24, 0" />
+            <StackPanel>
+                <controls:InAppNotification x:Name="Notification" ShowDismissButton="true" />
+                <Frame x:Name="RootFrame" Margin="24, 0" />
+            </StackPanel>
         </NavigationView>
     </Grid>
 </Page>

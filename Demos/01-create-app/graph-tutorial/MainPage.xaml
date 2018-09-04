@@ -35,7 +35,10 @@
                 </NavigationViewItem>
             </NavigationView.MenuItems>
 
-            <Frame x:Name="RootFrame" Margin="24, 0" />
+            <StackPanel>
+                <controls:InAppNotification x:Name="Notification" ShowDismissButton="true" />
+                <Frame x:Name="RootFrame" Margin="24, 0" />
+            </StackPanel>
         </NavigationView>
     </Grid>
 </Page>
