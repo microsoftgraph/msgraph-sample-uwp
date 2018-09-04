@@ -1,537 +1,467 @@
-# Build UWP apps with the Microsoft Graph .NET SDK
+# Build UWP apps with Microsoft Graph
 
-In this lab you will create a Universal Windows Platform (UWP) application using the Azure AD v2 authentication endpoint and the Microsoft Authentication Library (MSAL) to access data in Office 365 using the Microsoft Graph.
+In this lab you will create a Universal Windows Platform (UWP) application, configured with Azure Active Directory (Azure AD) for authentication & authorization using the [Windows Community Toolkit](https://docs.microsoft.com/en-us/windows/communitytoolkit/), that accesses data in Office 365 using the Microsoft Graph .NET SDK.
 
 ## In this lab
 
-* [Create an Azure AD native application with the App Registration Portal](#exercise1)
-* [Create an UWP native application](#exercise2)
-* [Extend the UWP app for Azure AD Authentication](#exercise3)
-* [Integrate Microsoft Graph into the Application](#exercise4)
 
 ## Prerequisites
 
 To complete this lab, you need the following:
 
-* Office 365 tenancy
-  * If you do not have one, you obtain one (for free) by signing up to the [Office 365 Developer Program](https://developer.microsoft.com/en-us/office/dev-program).
-* [Visual Studio 2017](https://www.visualstudio.com/vs)
+- [Visual Studio](https://visualstudio.microsoft.com/vs/) installed on a computer running Windows 10 with [Developer mode turned on](https://docs.microsoft.com/windows/uwp/get-started/enable-your-device-for-development). If you do not have Visual Studio, visit the previous link for download options. (**Note:** This tutorial was written with Visual Studio 2017 version 15.8.1. The steps in this guide may work with other versions, but that has not been tested.)
+- Either a personal Microsoft account with a mailbox on Outlook.com, or a Microsoft work or school account.
 
-<a name="exercise1"></a>
+If you don't have a Microsoft account, there are a couple of options to get a free account:
 
-## Exercise 1: Create an Azure AD native application with the App Registration Portal
+- You can [sign up for a new personal Microsoft account](https://signup.live.com/signup?wa=wsignin1.0&rpsnv=12&ct=1454618383&rver=6.4.6456.0&wp=MBI_SSL_SHARED&wreply=https://mail.live.com/default.aspx&id=64855&cbcxt=mai&bk=1454618383&uiflavor=web&uaid=b213a65b4fdc484382b6622b3ecaa547&mkt=E-US&lc=1033&lic=1).
+- You can [sign up for the Office 365 Developer Program](https://developer.microsoft.com/office/dev-program) to get a free Office 365 subscription.
 
-In this exercise you will create a new Azure AD native application using the App Registry Portal (ARP).
+## Exercise 1: Create a Universal Windows Platform (UWP) app
 
-1. Open a browser and navigate to the **App Registry Portal**: **apps.dev.microsoft.com** and login using a **personal account** (aka: Microsoft Account) or **Work or School Account**.
+Open Visual Studio, and select **File > New > Project**. In the **New Project** dialog, do the following:
+
+1. Select **Templates > Visual C# > Windows Universal**.
+1. Select **Blank App (Universal Windows)**.
+1. Enter **graph-tutorial** for the Name of the project.
+
+![Visual Studio 2017 create new project dialog](/Images/vs-newproj-01.png)
+
+> **Note:** Ensure that you enter the exact same name for the Visual Studio Project that is specified in these lab instructions. The Visual Studio Project name becomes part of the namespace in the code. The code inside these instructions depends on the namespace matching the Visual Studio Project name specified in these instructions. If you use a different project name the code will not compile unless you adjust all the namespaces to match the Visual Studio Project name you enter when you create the project.
+
+Select **OK**. In the **New Universal Windows Platform Project** dialog, ensure that the **Minimum version** is set to `Windows 10 Fall Creators Update (10.0; Build 16299)` or later and select **OK**.
+
+Before moving on, install some additional NuGet packages that you will use later.
+
+- [Microsoft.Toolkit.Uwp.Ui.Controls](https://www.nuget.org/packages/Microsoft.Toolkit.Uwp.Ui.Controls/) to add some UI controls for in-app notifications and loading indicators.
+- [Microsoft.Toolkit.Uwp.Ui.Controls.DataGrid](https://www.nuget.org/packages/Microsoft.Toolkit.Uwp.Ui.Controls.DataGrid/) to display the information returned by Microsoft Graph.
+- [Microsoft.Toolkit.Uwp.Ui.Controls.Graph](https://www.nuget.org/packages/Microsoft.Toolkit.Uwp.Ui.Controls.Graph/) to handle login and access token retrieval.
+- [Microsoft.Graph](https://www.nuget.org/packages/Microsoft.Graph/) for making calls to the Microsoft Graph.
+
+Select **Tools > NuGet Package Manager > Package Manager Console**. In the Package Manager Console, enter the following commands.
+
+```Powershell
+Install-Package Microsoft.Toolkit.Uwp.Ui.Controls
+Install-Package Microsoft.Toolkit.Uwp.Ui.Controls.DataGrid
+Install-Package Microsoft.Toolkit.Uwp.Ui.Controls.Graph
+Install-Package Microsoft.Graph
+```
+
+### Design the app
+
+Start by adding an application-level variable to track authentication state. In Solution Explorer, expand **App.xaml** and open **App.xaml.cs**. Add the following property to the `App` class.
+
+```cs
+public bool IsAuthenticated { get; set; }
+```
+
+Next, define the layout for the main page. Open `MainPage.xaml` and replace its entire contents with the following.
+
+```xml
+<Page
+    x:Class="graph_tutorial.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:graph_tutorial"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:graphControls="using:Microsoft.Toolkit.Uwp.UI.Controls.Graph"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <NavigationView x:Name="NavView"
+            IsSettingsVisible="False"
+            ItemInvoked="NavView_ItemInvoked">
+
+            <NavigationView.Header>
+                <graphControls:AadLogin x:Name="Login"
+                    HorizontalAlignment="Left"
+                    View="SmallProfilePhotoLeft"
+                    AllowSignInAsDifferentUser="False"
+                    />
+            </NavigationView.Header>
+
+            <NavigationView.MenuItems>
+                <NavigationViewItem Content="Home" x:Name="Home" Tag="home">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE10F;"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Calendar" x:Name="Calendar" Tag="calendar">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE163;"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.MenuItems>
+
+            <StackPanel>
+                <controls:InAppNotification x:Name="Notification" ShowDismissButton="true" />
+                <Frame x:Name="RootFrame" Margin="24, 0" />
+            </StackPanel>
+        </NavigationView>
+    </Grid>
+</Page>
+```
+
+This defines a basic [NavigationView](https://docs.microsoft.com/uwp/api/windows.ui.xaml.controls.navigationview) with **Home** and **Calendar** navigation links to act as the main view of the app. It also adds an [AadLogin](https://docs.microsoft.com/dotnet/api/microsoft.toolkit.uwp.ui.controls.graph.aadlogin?view=win-comm-toolkit-dotnet-stable) control in the header of the view. That control will allow the user to sign in and out. The control isn't fully enabled yet, you will configure it in a later exercise.
+
+Now add another XAML page for the Home view. Right-click the **graph-tutorial** project in Solution Explorer and choose **Add > New Item...**. Choose **Blank Page**, enter `HomePage.xaml` in the **Name** field, and choose **Add**. Add the following code inside the `<Grid>` element in the file.
+
+```xml
+<StackPanel>
+    <TextBlock FontSize="44" FontWeight="Bold" Margin="0, 12">Microsoft Graph UWP Tutorial</TextBlock>
+    <TextBlock x:Name="HomePageMessage">Please sign in to continue.</TextBlock>
+</StackPanel>
+```
+
+Now expand **MainPage.xaml** in Solution Explorer and open `MainPage.xaml.cs`. Add the following code to the `MainPage()` constructor **after** the `this.InitializeComponent();` line.
+
+```cs
+// Initialize auth state to false
+SetAuthState(false);
+
+// Navigate to HomePage.xaml
+RootFrame.Navigate(typeof(HomePage));
+```
+
+When the app first starts, it will initialize the authentication state to `false` and navigate to the home page.
+
+Add the following function to the `MainPage` class to manage authentication state.
+
+```cs
+private void SetAuthState(bool isAuthenticated)
+{
+    (App.Current as App).IsAuthenticated = isAuthenticated;
+
+    // Toggle controls that require auth
+    Calendar.IsEnabled = isAuthenticated;
+}
+```
+
+Add the following event handler to load the requested page when the user selects an item from the navigation view.
+
+```cs
+private void NavView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
+{
+    var invokedItem = args.InvokedItem as string;
+
+    switch (invokedItem.ToLower())
+    {
+        case "calendar":
+            throw new NotImplementedException();
+            break;
+        case "home":
+        default:
+            RootFrame.Navigate(typeof(HomePage));
+            break;
+    }
+}
+```
+
+Save all of your changes, then press **F5** or select **Debug > Start Debugging** in Visual Studio.
+
+![A screenshot of the home page](/Images/create-app-01.png)
+
+## Exercise 2: Register a native application with the Application Registration Portal
+
+In this exercise you will create a new Azure AD native application using the Application Registry Portal (ARP).
+
+1. Open a browser and navigate to the [Application Registration Portal](https://apps.dev.microsoft.com) and login using a **personal account** (aka: Microsoft Account) or **Work or School Account**.
+
 1. Select **Add an app** at the top of the page.
-1. On the **Register your application** page, set the **Application Name** to **NativeO365CalendarEvents** and select **Create**.
 
-    ![Screenshot of creating a new app in the App Registration Portal website](./Images/arp-create-app-01.png)
+    > **Note:** If you see more than one **Add an app** button on the page, select the one that corresponds to the **Converged apps** list.
 
-1. On the **NativeO365CalendarEvents Registration** page, under the **Properties** section, copy the **Application Id** Guid as you will need it later.
+1. On the **Register your application** page, set the **Application Name** to **UWP Graph Tutorial** and select **Create**.
 
-    ![Screenshot of newly created application's ID](./Images/arp-create-app-02.png)
+    ![Screenshot of creating a new app in the App Registration Portal website](../../Images/arp-create-app-01.png)
+
+1. On the **UWP Graph Tutorial Registration** page, under the **Properties** section, copy the **Application Id** as you will need it later.
+
+    ![Screenshot of newly created application's ID](../../Images/arp-create-app-02.png)
 
 1. Scroll down to the **Platforms** section.
 
     1. Select **Add Platform**.
     1. In the **Add Platform** dialog, select **Native Application**.
 
-        ![Screenshot creating a platform for the app](./Images/arp-create-app-03.png)
-
-    1. After the native application platform is created, copy the **Custom Redirect URIs** as you will need it later.
-
-        ![Screenshot of the custom application URI for the native application](./Images/arp-create-app-04.png)
-
-        > Unlike application secrets that are only displayed a single time when they are created, the custom redirect URIs are always shown so you can come back and get this string if you need it later.
-
-1. In the **Microsoft Graph Permissions** section, select **Add** next to the **Delegated Permissions** subsection.
-
-    ![Screenshot of the Add button for adding a delegated permission](./Images/arp-add-permission-01.png)
-
-    In the **Select Permission** dialog, locate and select the permission **Calendars.Read** and select **OK**:
-
-      ![Screenshot of adding the Calendars.Read permission](./Images/arp-add-permission-02.png)
-
-      ![Screenshot of the newly added Calendars.Read permission](./Images/arp-add-permission-03.png)
+        ![Screenshot creating a platform for the app](../../Images/arp-create-app-03.png)
 
 1. Scroll to the bottom of the page and select **Save**.
 
-<a name="exercise2"></a>
+## Exercise 3: Extend the app for Azure AD Authentication
 
-## Exercise 2: Create a UWP application
+In this exercise you will extend the application from the previous exercise to support authentication with Azure AD. This is required to obtain the necessary OAuth access token to call the Microsoft Graph. In this step you will integrate the [AadLogin](https://docs.microsoft.com/dotnet/api/microsoft.toolkit.uwp.ui.controls.graph.aadlogin?view=win-comm-toolkit-dotnet-stable) control from the [Windows Community Toolkit](https://github.com/Microsoft/WindowsCommunityToolkit) into the application.
 
-1. Open Visual Studio 2017.
-1. In Visual Studio, select **File > New > Project**.
-1. In the **New Project** dialog, do the following:
-    1. Select **Templates > Windows Universal**.
-    1. Select **Blank App (Universal Windows)**.
-    1. Enter **NativeO365CalendarEvents** for the **Name** of the project.
+Right-click the **graph-tutorial** project in Solution Explorer and choose **Add > New Item...**. Choose **Resources File (.resw)**, name the file `OAuth.resw` and choose **Add**. When the new file opens in Visual Studio, create two resources as follows.
 
-          ![Screenshot of creating a new Windows Universal project](./Images/vs-create-project-01.png)
+- **Name:** `AppId`, **Value:** the app ID you generated in Application Registration Portal
+- **Name:** `Scopes`, **Value:** `User.Read Calendars.Read`
 
-    1. In the **New Universal Windows Platform Project** dialog, you can select anything you like as nothing in this lab depends on specific Windows features.
+![A screenshot of the OAuth.resw file in the Visual Studio editor](/Images/edit-resources-01.png)
 
-        Select **OK** after specifying your desired **Target version** & **Minimum version**.
+> **Important:** If you're using source control such as git, now would be a good time to exclude the `OAuth.resw` file from source control to avoid inadvertently leaking your app ID.
 
-        ![Screenshot of creating a new Windows Universal project](./Images/vs-create-project-02.png)
+### Configure the AadLogin control
 
-1. Add the necessary NuGet Packages to the project:
-    1. In the **Solution Explorer** tool window, right-click the **References** node and select **Manage NuGet Packages...**:
+Start by adding code to read the values out of the resources file. Open `MainPage.xaml.cs` and add the following `using` statement to the top of the file.
 
-        ![Screenshot selecting Manage NuGet Packages in Visual Studio](./Images/vs-setup-project-01.png)
+```cs
+using Microsoft.Toolkit.Services.MicrosoftGraph;
+```
 
-    1. Add the Microsoft Graph .NET SDK to the project:
-        1. Select the **Browse** tab and enter **Microsoft Graph** in the search box. 
-        1. Select the **Microsoft.Graph** client in the results.
-        1. Select **Install** to install the package.
+Replace the `RootFrame.Navigate(typeof(HomePage));` line with the following code.
 
-            ![Screenshot installing the Microsoft Graph .NET SDK NuGet package](./Images/vs-setup-project-02.png)
+```cs
+// Load OAuth settings
+var oauthSettings = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView("OAuth");
+var appId = oauthSettings.GetString("AppId");
+var scopes = oauthSettings.GetString("Scopes");
 
-            If prompted, accept all licenses.
+if (string.IsNullOrEmpty(appId) || string.IsNullOrEmpty(scopes))
+{
+    Notification.Show("Could not load OAuth Settings from resource file.");
+}
+else
+{
+    // Initialize Graph
+    MicrosoftGraphService.Instance.AuthenticationModel = MicrosoftGraphEnums.AuthenticationModel.V2;
+    MicrosoftGraphService.Instance.Initialize(appId,
+        MicrosoftGraphEnums.ServicesToInitialize.UserProfile,
+        scopes.Split(' '));
 
-    1. Add the Microsoft Authentication Library (MSAL) Preview to the project:
-        1. Select the **Browse** tab and enter **Microsoft.Identity.Client** in the search box.
-        1. Select the **Include Prerelease** checkbox to include libraries currently in preview.
+    // Navigate to HomePage.xaml
+    RootFrame.Navigate(typeof(HomePage));
+}
+```
 
-            > MSAL is currently in preview at the time of writing.
+This code loads the settings from `OAuth.resw` and initializes the global instance of the `MicrosoftGraphService` with those values.
 
-        1. Select the **Microsoft.Identity.Client** client in the results.
-        1. Select **Install** to install the package.
+Now add an event handler for the `SignInCompleted` event on the `AadLogin` control. Open the `MainPage.xaml` file and replace the existing `<graphControls:AadLogin>` element with the following.
 
-            ![Screenshot installing the MSAL .NET SDK NuGet package](./Images/vs-setup-project-03.png)
+```xml
+<graphControls:AadLogin x:Name="Login"
+    HorizontalAlignment="Left"
+    View="SmallProfilePhotoLeft"
+    AllowSignInAsDifferentUser="False"
+    SignInCompleted="Login_SignInCompleted"
+    />
+```
 
-            If prompted, accept all licenses.
+Then add the following function to the `MainPage` class in `MainPage.xaml.cs`.
 
-### Create the Application User Interface
+```cs
+private void Login_SignInCompleted(object sender, Microsoft.Toolkit.Uwp.UI.Controls.Graph.SignInEventArgs e)
+{
+    // Set the auth state
+    SetAuthState(true);
+    // Reload the home page
+    RootFrame.Navigate(typeof(HomePage));
+}
+```
 
-The first step is to create the shell of the user experience; creating a workable storyboard.
+Finally, in Solution Explorer, expand **HomePage.xaml** and open `HomePage.xaml.cs`. Add the following code after the `this.InitializeComponent();` line.
 
-1. Open the **MainPage.xaml** file.
-1. Replace the empty `<Grid></Grid>` XAML element with the following XAML.
+```cs
+if ((App.Current as App).IsAuthenticated)
+{
+    HomePageMessage.Text = "Welcome! Please use the menu to the left to select a view.";
+}
+```
 
-    This XAML will create an interface broken into two sections:
+Restart the app and click the **Sign In** control at the top of the app. Once you've signed in, the UI should change to indicate that you've successfully signed-in.
 
-      * **Header**:
-        * A button to sign in & sign out of your Office 365 account
-        * A button to refresh the list of events from your calendar
-        * Two (2) text blocks to display the application title and name of the signed in user.
-      * **Body**:
-        * Progress animation control shown when authenticating with Azure AD & loading events from Office 365 using the Microsoft Graph
-        * List control showing events from your calendar
+![A screenshot of the app after signing in](/Images/add-aad-auth-01.png)
 
-    ```xml
-    <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
-      <Grid x:Name="MainGrid">
-        <Grid.RowDefinitions>
-          <RowDefinition Height="90"/>
-          <RowDefinition Height="90"/>
-          <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+> **Note:** The `AadLogin` control implements the logic of storing and refreshing the access token for you. The tokens are stored in secure storage and refreshed as needed.
 
-        <Button Grid.Row="0" x:Name="ConnectButton" HorizontalAlignment="Right" Content="Connect" FontSize="14.667" Click="ConnectButton_Click" Height="40" Width="100" Background="Transparent" FontWeight="SemiBold" Foreground="White" BorderBrush="White"/>
-        <TextBlock Grid.Row="1" Grid.Column="1"  x:Name="InfoText" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="{ThemeResource TextStyleLargeFontSize}" TextWrapping="Wrap" Width="750" Margin="0,10"/>
-        <Button Grid.Row="1" x:Name="ReloadButton"  Margin="0,20,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Content="Load Events" FontSize="14.667"  Click="ReloadButton_Click" Height="40" Width="100" Background="Transparent" FontWeight="SemiBold" Foreground="White" BorderBrush="White"/>
-        <TextBlock x:Name="appTitle" Grid.Row="0" Text="Windows Office 365 Calendar Events" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontSize="36" Style="{StaticResource HeaderTextBlockStyle}" Foreground="White" />
+## Exercise 4: Extend the app for Microsoft Graph
 
-        <ProgressRing x:Name="ProgressBar" Visibility="Collapsed" Grid.Row="2" IsActive="True" Width="50" Height="50" Foreground="White" />
-        <ListView x:Name="EventList" AutomationProperties.AutomationId="EventListView" AutomationProperties.Name="Items" TabIndex="1" Grid.Row="2" Margin="50,0,0,0" Padding="120,0,0,60" IsSwipeEnabled="False" SelectionMode="Single">
-          <ListView.ItemTemplate>
-            <DataTemplate>
-              <Grid Margin="6">
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="Auto"/>
-                  <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                  <RowDefinition Height="Auto"/>
-                  <RowDefinition Height="Auto"/>
-                  <RowDefinition Height="Auto"/>
-                  <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+In this exercise you will incorporate the Microsoft Graph into the application. For this application, you will use the [Microsoft Graph Client Library for .NET](https://github.com/microsoftgraph/msgraph-sdk-dotnet) to make calls to Microsoft Graph.
 
-                <StackPanel Grid.Column="1" Grid.Row="1" Margin="0,0,5,0">
-                  <TextBlock Style="{StaticResource BodyTextBlockStyle}" Text="{Binding Subject}" TextWrapping="NoWrap" MaxHeight="40"  FontSize="20" Foreground="White"/>
-                </StackPanel>
+### Get calendar events from Outlook
 
-                <StackPanel Grid.Column="1" Grid.Row="2"  Margin="0,0,5,0">
-                  <TextBlock Style="{StaticResource BodyTextBlockStyle}" Text="Start Time: " TextWrapping="NoWrap" MaxHeight="40" FontSize="16"  Foreground="White"/>
-                </StackPanel>
+Start by adding a new page for the calendar view. Right-click the **graph-tutorial** project in Solution Explorer and choose **Add > New Item...**. Choose **Blank Page**, enter `CalendarPage.xaml` in the **Name** field, and choose **Add**.
 
-                <StackPanel Grid.Column="2" Grid.Row="2"  Margin="80,0,5,0">
-                  <TextBlock Style="{StaticResource BodyTextBlockStyle}" Text="{Binding Start}" TextWrapping="NoWrap" MaxHeight="40" FontSize="16"  Foreground="White"/>
-                </StackPanel>
+Open `CalendarPage.xaml` and add the following line inside the existing `<Grid>` element.
 
-                <StackPanel Grid.Column="1" Grid.Row="3"  Margin="0,0,5,0">
-                  <TextBlock Style="{StaticResource BodyTextBlockStyle}" Text="End Time: " TextWrapping="NoWrap" MaxHeight="40" FontSize="16"  Foreground="White"/>
-                </StackPanel>
+```xml
+<TextBlock x:Name="Events" TextWrapping="Wrap"/>
+```
 
-                <StackPanel Grid.Column="2" Grid.Row="3" Margin="80,0,5,0">
-                  <TextBlock Style="{StaticResource BodyTextBlockStyle}" Text="{Binding End}" TextWrapping="NoWrap" MaxHeight="40" FontSize="16"  Foreground="White"/>
-                </StackPanel>
-              </Grid>
-            </DataTemplate>
-          </ListView.ItemTemplate>
-          <ListView.ItemContainerStyle>
-            <Style TargetType="FrameworkElement">
-              <Setter Property="Margin" Value="0,0,0,10"/>
-            </Style>
-          </ListView.ItemContainerStyle>
-        </ListView>
-      </Grid>
+Open `CalendarPage.xaml.cs` and add the following `using` statements at the top of the file.
 
+```cs
+using Microsoft.Toolkit.Services.MicrosoftGraph;
+using Microsoft.Toolkit.Uwp.UI.Controls;
+using Newtonsoft.Json;
+```
+
+Then add the following functions to the `CalendarPage` class.
+
+```cs
+private void ShowNotification(string message)
+{
+    // Get the main page that contains the InAppNotification
+    var mainPage = (Window.Current.Content as Frame).Content as MainPage;
+
+    // Get the notification control
+    var notification = mainPage.FindName("Notification") as InAppNotification;
+
+    notification.Show(message);
+}
+
+protected override async void OnNavigatedTo(NavigationEventArgs e)
+{
+    // Get the Graph client from the service
+    var graphClient = MicrosoftGraphService.Instance.GraphProvider;
+
+    try
+    {
+        // Get the events
+        var events = await graphClient.Me.Events.Request()
+            .Select("subject,organizer,start,end")
+            .OrderBy("createdDateTime DESC")
+            .GetAsync();
+
+        // TEMPORARY: Show the results as JSON
+        Events.Text = JsonConvert.SerializeObject(events.CurrentPage);
+    }
+    catch(Microsoft.Graph.ServiceException ex)
+    {
+        ShowNotification($"Exception getting events: {ex.Message}");
+    }
+
+    base.OnNavigatedTo(e);
+}
+```
+
+Consider with the code in `OnNavigatedTo` is doing.
+
+- The URL that will be called is `/v1.0/me/events`.
+- The `Select` function limits the fields returned for each events to just those the view will actually use.
+- The `OrderBy` function sorts the results by the date and time they were created, with the most recent item being first.
+
+Run the app, sign in, and click the **Calendar** navigation item in the left-hand menu. You should see a JSON dump of the events on the user's calendar.
+
+### Display the results
+
+Now you can replace the JSON dump with something to display the results in a user-friendly manner. Replace the entire contents of `CalendarPage.xaml` with the following.
+
+```xml
+<Page
+    x:Class="graph_tutorial.CalendarPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:graph_tutorial"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <controls:DataGrid x:Name="EventList" Grid.Row="1"
+                AutoGenerateColumns="False">
+            <controls:DataGrid.Columns>
+                <controls:DataGridTextColumn
+                        Header="Organizer"
+                        Width="SizeToCells"
+                        Binding="{Binding Organizer.EmailAddress.Name}"
+                        FontSize="20" />
+                <controls:DataGridTextColumn
+                        Header="Subject"
+                        Width="SizeToCells"
+                        Binding="{Binding Subject}"
+                        FontSize="20" />
+                <controls:DataGridTextColumn
+                        Header="Start"
+                        Width="SizeToCells"
+                        Binding="{Binding Start.DateTime}"
+                        FontSize="20" />
+                <controls:DataGridTextColumn
+                        Header="End"
+                        Width="SizeToCells"
+                        Binding="{Binding End.DateTime}"
+                        FontSize="20" />
+            </controls:DataGrid.Columns>
+        </controls:DataGrid>
     </Grid>
-    ```
+</Page>
+```
 
-<a name="exercise3"></a>
+This replaces the `TextBlock` with a `DataGrid`. Now open `CalendarPage.xaml.cs` and replace the `Events.Text = JsonConvert.SerializeObject(events.CurrentPage);` line with the following.
 
-## Exercise 3: Extend the UWP app for Azure AD Authentication
+```cs
+EventList.ItemsSource = events.CurrentPage.ToList();
+```
 
-With the application created, now extend it to support authentication with Azure AD. This is required to obtain the necessary OAuth access token to call the Microsoft Graph. In this step you will integrate the Microsoft Authentication Library (MSAL) into the application.
+If you run the app now and select the calendar, you should get a list of events in a data grid. However, the **Start** and **End** values are displayed in a non-user-friendly manner. You can control how those values are displayed by using a [value converter](https://docs.microsoft.com/uwp/api/Windows.UI.Xaml.Data.IValueConverter).
 
-1. Open the **App.xaml** file.
-1. Add the following markup to the `<Application>` element. This will specify two formatting options as well as define the application ID and MSAL redirect URLs:
+Right-click the **graph-tutorial** project in Solution Explorer and choose **Add > Class...**. Name the class `GraphDateTimeTimeZoneConverter.cs` and choose **Add**. Replace the entire contents of the file with the following.
 
-    ```xml
-    <Application.Resources>
-      <SolidColorBrush x:Key="SampleHeaderBrush" Color="#007ACC" />
-      <SolidColorBrush x:Key="ApplicationPageBackgroundThemeBrush" Color="#1799F0" />
+```cs
+using Microsoft.Graph;
+using System;
 
-      <x:String x:Key="ida:ClientID">ENTER_APP_ID</x:String>
-      <x:String x:Key="ida:ReturnUrl">ENTER_APP_CUSTOM_REDIRECT_URI</x:String>
-    </Application.Resources>
-    ```
-
-1. Update the `ida:ClientID` & `ida:ReturnUrl` values to those you copied when creating a the Azure AD application in [exercise 1 above](#exercise1).
-1. Add an authentication helper class:
-    1. Right-click the project in the **Solution Explorer** tool window and select **Add > Class**.
-    1. Set the **Name** of the class to **AuthenticationHelper.cs** and select **Add**.
-    1. In the **AuthenticationHelper.cs** file, add the following `using` statements after the default statements added:
-
-        ```cs
-        using System.Net.Http.Headers;
-        using Windows.Storage;
-        using Microsoft.Identity.Client;
-        ```
-
-    1. Update the accessor of the `AuthenticationHelper` class to be public by adding the `public` keyword:
-
-        ```cs
-        public class AuthenticationHelper
-        ```
-
-    1. Add the following members to the `AuthenticationHelper` class that will be used throughout this class:
-
-        ```cs
-        static string clientId = App.Current.Resources["ida:ClientID"].ToString();
-        public static string[] Scopes = { "User.Read", "Calendars.Read" };
-
-        public static PublicClientApplication IdentityClientApp = new PublicClientApplication(clientId);
-
-        public static string TokenForUser = null;
-        public static DateTimeOffset Expiration;
-        public static ApplicationDataContainer _settings = ApplicationData.Current.RoamingSettings;
-        ```
-
-    1. Add the following method `GetTokenForUserAsync()` that will start the interactive authentication process with the current user of the application. If the authentication process is successful, the user's name and email address are stored in Windows roaming storage and the token is returned to the caller:
-
-        ```cs
-        internal static async Task<string> GetTokenForUserAsync()
+namespace graph_tutorial
+{
+    class GraphDateTimeTimeZoneConverter : Windows.UI.Xaml.Data.IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
         {
-          AuthenticationResult authResult;
-          try
-          {
-            authResult = await IdentityClientApp.AcquireTokenSilentAsync(Scopes, IdentityClientApp.Users.First());
-            TokenForUser = authResult.AccessToken;
+            DateTimeTimeZone date = value as DateTimeTimeZone;
 
-            _settings.Values["userEmail"] = authResult.User.DisplayableId;
-            _settings.Values["userName"] = authResult.User.Name;
-          }
-
-          catch (Exception)
-          {
-            if (TokenForUser == null || Expiration <= DateTimeOffset.UtcNow.AddMinutes(5))
+            if (date != null)
             {
-              authResult = await IdentityClientApp.AcquireTokenAsync(Scopes);
-
-              TokenForUser = authResult.AccessToken;
-              Expiration = authResult.ExpiresOn;
-
-              _settings.Values["userEmail"] = authResult.User.DisplayableId;
-              _settings.Values["userName"] = authResult.User.Name;
+                // Resolve the time zone
+                var timezone = TimeZoneInfo.FindSystemTimeZoneById(date.TimeZone);
+                // Parse method assumes local time, which may not be the case
+                var parsedDateAsLocal = DateTimeOffset.Parse(date.DateTime);
+                // Determine the offset from UTC time for the specific date
+                // Making this call adjusts for DST as appropriate
+                var tzOffset = timezone.GetUtcOffset(parsedDateAsLocal.DateTime);
+                // Create a new DateTimeOffset with the specific offset from UTC
+                var correctedDate = new DateTimeOffset(parsedDateAsLocal.DateTime, tzOffset);
+                // Return the local date time string
+                return correctedDate.LocalDateTime.ToString();
             }
-          }
 
-          return TokenForUser;
+            return string.Empty;
         }
-        ```
 
-    1. Add the following method `SignOut()` to log the user out:
-
-        ```cs
-        public static void SignOut()
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
         {
-          foreach (var user in IdentityClientApp.Users)
-          {
-            IdentityClientApp.Remove(user);
-          }
-
-          TokenForUser = null;
-
-          _settings.Values["userID"] = null;
-          _settings.Values["userEmail"] = null;
-          _settings.Values["userName"] = null;
+            throw new NotImplementedException();
         }
-        ```
+    }
+}
+```
 
-1. Update the application's user interface to leverage the Azure AD authentication code you just added:
-    1. In the **Solution Explorer** tool window, expand the **MainPage.xaml** file and double-click the **MainPage.xaml.cs** file:
+This code takes the [dateTimeTimeZone](https://developer.microsoft.com/en-us/graph/docs/api-reference/v1.0/resources/datetimetimezone) structure returned by Microsoft Graph and parses it into a `DateTimeOffset` object. It then converts the value into the user's time zone and returns the formatted value.
 
-        ![Screenshot showing the MainPage.xaml.cs file in the Solution Explorer tool window](./Images/vs-code-project-01.png)
+Open `CalendarPage.xaml` and add the following **before** the `<Grid>` element.
 
-    1. Add the following `using` statements to the end of the existing `using` statements in t he **MainPage.xaml.cs** file:
+```xml
+<Page.Resources>
+    <local:GraphDateTimeTimeZoneConverter x:Key="DateTimeTimeZoneValueConverter" />
+</Page.Resources>
+```
 
-        ```cs
-        using System.Threading.Tasks;
-        using Windows.Storage;
-        ```
+Then, replace the `Binding="{Binding Start.DateTime}"` line with the following.
 
-    1. Add the following members to the `MainPage` partial class
+```xml
+Binding="{Binding Start, Converter={StaticResource DateTimeTimeZoneValueConverter}}"
+```
 
-        ```cs
-        private bool _connected = false;
-        private string _emailAddress = null;
-        private string _displayName = null;
-        public static ApplicationDataContainer _settings = ApplicationData.Current.RoamingSettings;
-        ```
+Replace the `Binding="{Binding End.DateTime}"` line with the following.
 
-    1. Add the following method that will run when the application is initialized:
+```xml
+Binding="{Binding End, Converter={StaticResource DateTimeTimeZoneValueConverter}}"
+```
 
-        ```cs
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-          if (!App.Current.Resources.ContainsKey("ida:ClientID"))
-          {
-            InfoText.Text = "Oops - It looks like this app is not registered with Office 365, because we don't see a client id in App.xaml.";
-            ConnectButton.IsEnabled = false;
-          }
-          else
-          {
-            InfoText.Text = "Press the following button to connect to Office 365.";
-            ConnectButton.IsEnabled = true;
-          }
-        }
-        ```
+Run the app, sign in, and click the **Calendar** navigation item. You should see the list of events with the **Start** and **End** values formatted.
 
-    1. Add the following method that will be used to trigger the authentication process:
-
-        ```cs
-        private async Task<bool> SignInCurrentUserAsync()
-        {
-          var token = await AuthenticationHelper.GetTokenForUserAsync();
-          if (token != null)
-          {
-            this._emailAddress = (string)_settings.Values["userEmail"];
-            this._displayName = (string)_settings.Values["userName"];
-            return true;
-          }
-          else
-          {
-            return false;
-          }
-        }
-        ```
-
-    1. Add the following method that acts as the event handler when the **Connect** button is pressed. It will start the signin / signout process depending on the current logged in state.
-
-        ```cs
-        private async void ConnectButton_Click(object sender, RoutedEventArgs e)
-        {
-          ProgressBar.Visibility = Visibility.Visible;
-
-          if (!_connected)
-          {
-            if (await SignInCurrentUserAsync())
-            {
-              InfoText.Text = "Hi " + _displayName + " (" + _emailAddress + ")!";
-              ConnectButton.Content = "Disconnect";
-              _connected = true;
-            }
-            else
-            {
-              InfoText.Text = "Oops! We couldn't connect to Office 365. Check your debug output for errors.";
-            }
-          } else
-          {
-            EventList.ItemsSource = null;
-            AuthenticationHelper.SignOut();
-
-            InfoText.Text = "Press the following button to connect to Office 365.";
-            ConnectButton.Content = "Connect";
-
-            _connected = false;
-          }
-
-          ProgressBar.Visibility = Visibility.Collapsed;
-        }
-        ```
-
-    1. Add the following method stub that you will implement later. It is used by the button in the UI that will retrieve events from your Office 365 calendar using the Microsoft Graph:
-
-        ```cs
-        private async void ReloadButton_Click(object sender, RoutedEventArgs e)
-        {
-        }
-        ```
-
-    1. Test the application by pressing **F5**.
-
-        ![Screenshot of the UWP application running in debug mode](./Images/vs-app-01.png)
-
-    1. After the app loads, press the **Connect** button to initiate the login process:
-
-        ![Screenshot of the Azure AD login prompt](./Images/vs-app-02.png)
-
-    1. After successfully logging in, you may be prompted to consent to the permissions requested by the application. If prompted, agree to the consent dialog.
-
-    1. After successfully signing in, you will see the application display the current name and email of the signed in user:
-
-        ![Screenshot showing the application after successfully signing into Azure AD](./Images/vs-app-03.png)
-
-        Now that the application is working with Azure AD, the next step is to implement the Microsoft Graph integration.
-
-    1. Select the **Disconnect** button in the application and close the application.
-
-<a name="exercise4"></a>
-
-## Exercise 4: Integrate Microsoft Graph into the Application
-
-The last step is to incorporate the Microsoft Graph into the application. For this application, you will use the Microsoft Graph .NET SDK.
-
-1. Create a new event model object to store the events:
-    1. In the **Solution Explorer** tool window, right-click the project and select **Add > New Folder**.
-        1. Name the folder **Models**.
-    1. Right-click the **Models** folder and select **Add > Class**.
-        1. Name the folder **CalendarEvent**.
-    1. Add the following `using` statements to the end of the existing `using` statements in the **MainPage.xaml.cs** file:
-
-        ```cs
-        using System.ComponentModel.DataAnnotations;
-        ```
-
-    1. Change the accessor of the class to `public`.
-    1. Add the three members to the class to store the subject and dates related to the event. The final code for the `CalendarEvent` class should be as follows:
-
-        ```cs
-        public class CalendarEvent
-        {
-          public string Subject { get; set; }
-
-          [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
-          public DateTimeOffset? Start { get; set; }
-
-          [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
-          public DateTimeOffset? End { get; set; }
-        }
-        ```
-
-1. Extend the `AuthenticationHelper` class to return a `GraphServiceClient` object used to call the Microsoft Graph:
-    1. Open the **AuthenticationHelper.cs** file.
-    1. Add the following `using` statements to the end of the existing `using` statements in the **MainPage.xaml.cs** file:
-
-        ```cs
-        using Microsoft.Graph;
-        ```
-
-    1. Add the following code to the `AuthenticationHelper` class to create a create a new instance of the `GraphServiceClient`:
-
-        ```cs
-        private static GraphServiceClient graphClient = null;
-
-        public static GraphServiceClient GetAuthenticatedClient()
-        {
-          AuthenticationHelper.graphClient = new GraphServiceClient(
-            new DelegateAuthenticationProvider(async (requestMessage) =>
-            {
-              string accessToken = await AuthenticationHelper.GetTokenForUserAsync();
-              requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-            }));
-          return graphClient;
-        }
-        ```
-
-    1. Locate the `SignOut()` method and add the following code to the end of the method to destroy the authenticated `GraphServiceClient` object.
-
-        ```cs
-        AuthenticationHelper.graphClient = null;
-        ```
-
-1. Update the application to retrieve calendar events for the currently logged in user:
-    1. Open the **MainPage.xaml.cs** file.
-    1. Add the following `using` statements to the end of the existing `using` statements in the **MainPage.xaml.cs** file:
-
-        ```cs
-        using NativeO365CalendarEvents.Models;
-        using Microsoft.Graph;
-        ```
-
-    1. Add the following method that will retrieve calendar events from your Office 365 calendar and bind them to the XAML list control:
-
-        ```cs
-        public async Task ReloadEvents()
-        {
-          var graphService = AuthenticationHelper.GetAuthenticatedClient();
-          var request = graphService.Me.Events.Request(new Option[] { 
-            new QueryOption("top", "20"), 
-            new QueryOption("skip", "0") 
-          });
-          var userEventsCollectionPage = await request.GetAsync();
-
-          var calendarEvents = new List<CalendarEvent>();
-          foreach (var calEvent in userEventsCollectionPage)
-          {
-            calendarEvents.Add(new CalendarEvent
-            {
-              Subject = !string.IsNullOrEmpty(calEvent.Subject) 
-                ? calEvent.Subject 
-                : string.Empty,
-              Start = !string.IsNullOrEmpty(calEvent.Start.DateTime) 
-                ? DateTime.Parse(calEvent.Start.DateTime) 
-                : new DateTime(),
-              End = !string.IsNullOrEmpty(calEvent.End.DateTime) 
-                ? DateTime.Parse(calEvent.End.DateTime) 
-                : new DateTime()
-            });
-          }
-
-          if (calendarEvents != null && calendarEvents.Count > 0)
-          {
-            EventList.ItemsSource = calendarEvents;
-            EventList.Visibility = Visibility.Visible;
-          }
-          else
-          {
-            EventList.ItemsSource = null;
-            EventList.Visibility = Visibility.Collapsed;
-          }
-        }
-        ```
-
-    1. Update the `ReloadButton_Click()` method by adding the following code to it to call the method you just added:
-
-        ```cs
-        ProgressBar.Visibility = Visibility.Visible;
-        await ReloadEvents();
-        ProgressBar.Visibility = Visibility.Collapsed;
-        ```
-
-    1. Test the application by pressing **F5**.
-    1. After the app loads, press the **Connect** button to initiate the login process:
-    1. After successfully signing in, you will see the application display the current name and email of the signed in user.
-
-        Select the **Load Events** button.
-
-        After a moment you should see a list of events from your Office 365 calendar.
-
-        ![Screenshot showing the application displaying events from the user's calendar.](./Images/vs-app-04.png)
+![A screenshot of the table of events](/Images/add-msgraph-01.png)
