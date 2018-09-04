@@ -175,3 +175,6 @@ FakesAssemblies/
 
 ## VS Code
 .vscode/
+
+## OAuth settings
+OAuth.resw

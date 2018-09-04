@@ -5,6 +5,7 @@
     xmlns:local="using:graph_tutorial"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:graphControls="using:Microsoft.Toolkit.Uwp.UI.Controls.Graph"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -19,6 +20,7 @@
                     HorizontalAlignment="Left"
                     View="SmallProfilePhotoLeft"
                     AllowSignInAsDifferentUser="False"
+                    SignInCompleted="Login_SignInCompleted"
                     />
             </NavigationView.Header>
 
@@ -35,7 +37,10 @@
                 </NavigationViewItem>
             </NavigationView.MenuItems>
 
-            <Frame x:Name="RootFrame" Margin="24, 0" />
+            <StackPanel>
+                <controls:InAppNotification x:Name="Notification" ShowDismissButton="true" />
+                <Frame x:Name="RootFrame" Margin="24, 0" />
+            </StackPanel>
         </NavigationView>
     </Grid>
 </Page>

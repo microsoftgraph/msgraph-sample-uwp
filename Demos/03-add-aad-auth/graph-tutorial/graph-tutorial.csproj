@@ -108,6 +108,7 @@
       <SubType>Designer</SubType>
     </AppxManifest>
     <None Include="graph-tutorial_TemporaryKey.pfx" />
+    <PRIResource Include="OAuth.resw" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\Default.rd.xml" />
