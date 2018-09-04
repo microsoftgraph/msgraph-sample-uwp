@@ -67,7 +67,7 @@ namespace graph_tutorial
             switch (invokedItem.ToLower())
             {
                 case "calendar":
-                    throw new NotImplementedException();
+                    RootFrame.Navigate(typeof(CalendarPage));
                     break;
                 case "home":
                 default:
