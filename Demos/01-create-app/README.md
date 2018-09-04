@@ -52,6 +52,7 @@ Next, define the layout for the main page. Open `MainPage.xaml` and replace its 
     xmlns:local="using:graph_tutorial"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:graphControls="using:Microsoft.Toolkit.Uwp.UI.Controls.Graph"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
