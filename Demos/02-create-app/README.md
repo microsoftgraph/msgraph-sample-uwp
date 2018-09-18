@@ -33,11 +33,11 @@ In this demo you will create a UWP application with Visual Studio and wire up a 
 
     1. Add the Microsoft Authentication Library (MSAL) Preview to the project:
         1. Select the **Browse** tab and enter **Microsoft.Identity.Client** in the search box.
-        1. Select the **Include Prerelease** checkbox to include libraries currently in preview.
+        1. Select the **Include Pre-release** checkbox to include libraries currently in preview.
 
             > MSAL is currently in preview at the time of writing.
 
-        1. Select the **Microsoft.Identity.Client** client in the results.
+        1. Select the **Microsoft.Identity.Client** client in the results. Please use version 1.1.4-preview0002.
         1. Select **Install** to install the package.
 
             ![Screenshot installing the MSAL .NET SDK NuGet package](../../Images/vs-setup-project-03.png)

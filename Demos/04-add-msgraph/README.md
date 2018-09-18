@@ -77,9 +77,9 @@ In this demo you will incorporate the Microsoft Graph into the application. For 
         public async Task ReloadEvents()
         {
           var graphService = AuthenticationHelper.GetAuthenticatedClient();
-          var request = graphService.Me.Events.Request(new Option[] { 
-            new QueryOption("top", "20"), 
-            new QueryOption("skip", "0") 
+          var request = graphService.Me.Events.Request(new Option[] {
+            new QueryOption("top", "20"),
+            new QueryOption("skip", "0")
           });
           var userEventsCollectionPage = await request.GetAsync();
 
@@ -88,14 +88,14 @@ In this demo you will incorporate the Microsoft Graph into the application. For 
           {
             calendarEvents.Add(new CalendarEvent
             {
-              Subject = !string.IsNullOrEmpty(calEvent.Subject) 
-                ? calEvent.Subject 
+              Subject = !string.IsNullOrEmpty(calEvent.Subject)
+                ? calEvent.Subject
                 : string.Empty,
-              Start = !string.IsNullOrEmpty(calEvent.Start.DateTime) 
-                ? DateTime.Parse(calEvent.Start.DateTime) 
+              Start = !string.IsNullOrEmpty(calEvent.Start.DateTime)
+                ? DateTime.Parse(calEvent.Start.DateTime)
                 : new DateTime(),
-              End = !string.IsNullOrEmpty(calEvent.End.DateTime) 
-                ? DateTime.Parse(calEvent.End.DateTime) 
+              End = !string.IsNullOrEmpty(calEvent.End.DateTime)
+                ? DateTime.Parse(calEvent.End.DateTime)
                 : new DateTime()
             });
           }
