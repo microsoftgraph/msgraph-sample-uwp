@@ -30,6 +30,7 @@ This module has been recorded and is available in the Office Development YouTube
 
 | Version |        Date        |                    Comments                    |
 | ------- | ------------------ | ---------------------------------------------- |
+| 1.3     | September 20, 2018 | 2019Q1 content refresh                         |
 | 1.2     | June 28, 2018      | Added screencast.                              |
 | 1.1     | June 22, 2018      | Rewritten to use latest guidance.              |
 | 1.0     | ~November 24, 2017 | Add Microsoft Graph related product breakouts. |
