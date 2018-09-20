@@ -7,7 +7,7 @@
     <SolidColorBrush x:Key="SampleHeaderBrush" Color="#007ACC" />
     <SolidColorBrush x:Key="ApplicationPageBackgroundThemeBrush" Color="#1799F0" />
 
-    <x:String x:Key="ida:ClientID">ENTER_APP_ID</x:String>
-    <x:String x:Key="ida:ReturnUrl">ENTER_APP_CUSTOM_REDIRECT_URI</x:String>
+    <x:String x:Key="ida:ClientID"></x:String>
+    <x:String x:Key="ida:ReturnUrl"></x:String>
   </Application.Resources>
 </Application>

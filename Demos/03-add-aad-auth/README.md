@@ -158,7 +158,7 @@ In this demo you will extend the application from the previous demo to support a
         }
         ```
 
-    1. Add the following method that acts as the event handler when the **Connect** button is pressed. It will start the signin / signout process depending on the current logged in state.
+    1. Add the following method that acts as the event handler when the **Connect** button is pressed. It will start the sign in/sign out process depending on the current logged in state.
 
         ```cs
         private async void ConnectButton_Click(object sender, RoutedEventArgs e)

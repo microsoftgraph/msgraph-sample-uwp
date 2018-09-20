@@ -4,10 +4,10 @@ In this lab you will create a Universal Windows Platform (UWP) application using
 
 ## In this lab
 
-* [Create an Azure AD native application with the App Registration Portal](#exercise1)
-* [Create an UWP native application](#exercise2)
-* [Extend the UWP app for Azure AD Authentication](#exercise3)
-* [Integrate Microsoft Graph into the Application](#exercise4)
+* [Exercise 1: Create an Azure AD native application with the App Registration Portal](#exercise-1-create-an-azure-ad-native-application-with-the-app-registration-portal)
+* [Exercise 2: Create an UWP native application](#exercise-2-create-an-uwp-native-application)
+* [Exercise 3: Extend the UWP app for Azure AD Authentication](#exercise-3-extend-the-uwp-app-for-azure-ad-authentication)
+* [Exercise 4: Integrate Microsoft Graph into the Application](#exercise-4-integrate-microsoft-graph-into-the-application)
 
 ## Prerequisites
 
@@ -16,8 +16,6 @@ To complete this lab, you need the following:
 * Office 365 tenancy
   * If you do not have one, you obtain one (for free) by signing up to the [Office 365 Developer Program](https://developer.microsoft.com/en-us/office/dev-program).
 * [Visual Studio 2017](https://www.visualstudio.com/vs)
-
-<a name="exercise1"></a>
 
 ## Exercise 1: Create an Azure AD native application with the App Registration Portal
 
@@ -58,8 +56,6 @@ In this exercise you will create a new Azure AD native application using the App
 
 1. Scroll to the bottom of the page and select **Save**.
 
-<a name="exercise2"></a>
-
 ## Exercise 2: Create a UWP application
 
 1. Open Visual Studio 2017.
@@ -83,7 +79,7 @@ In this exercise you will create a new Azure AD native application using the App
         ![Screenshot selecting Manage NuGet Packages in Visual Studio](./Images/vs-setup-project-01.png)
 
     1. Add the Microsoft Graph .NET SDK to the project:
-        1. Select the **Browse** tab and enter **Microsoft Graph** in the search box. 
+        1. Select the **Browse** tab and enter **Microsoft Graph** in the search box.
         1. Select the **Microsoft.Graph** client in the results.
         1. Select **Install** to install the package.
 
@@ -93,11 +89,11 @@ In this exercise you will create a new Azure AD native application using the App
 
     1. Add the Microsoft Authentication Library (MSAL) Preview to the project:
         1. Select the **Browse** tab and enter **Microsoft.Identity.Client** in the search box.
-        1. Select the **Include Prerelease** checkbox to include libraries currently in preview.
+        1. Select the **Include Pre-release** checkbox to include libraries currently in preview.
 
             > MSAL is currently in preview at the time of writing.
 
-        1. Select the **Microsoft.Identity.Client** client in the results.
+        1. Select the **Microsoft.Identity.Client** client in the results. Please use version 1.1.4-preview0002.
         1. Select **Install** to install the package.
 
             ![Screenshot installing the MSAL .NET SDK NuGet package](./Images/vs-setup-project-03.png)
@@ -183,8 +179,6 @@ The first step is to create the shell of the user experience; creating a workabl
 
     </Grid>
     ```
-
-<a name="exercise3"></a>
 
 ## Exercise 3: Extend the UWP app for Azure AD Authentication
 
@@ -343,7 +337,7 @@ With the application created, now extend it to support authentication with Azure
         }
         ```
 
-    1. Add the following method that acts as the event handler when the **Connect** button is pressed. It will start the signin / signout process depending on the current logged in state.
+    1. Add the following method that acts as the event handler when the **Connect** button is pressed. It will start the sign in/sign out process depending on the current logged in state.
 
         ```cs
         private async void ConnectButton_Click(object sender, RoutedEventArgs e)
@@ -402,8 +396,6 @@ With the application created, now extend it to support authentication with Azure
         Now that the application is working with Azure AD, the next step is to implement the Microsoft Graph integration.
 
     1. Select the **Disconnect** button in the application and close the application.
-
-<a name="exercise4"></a>
 
 ## Exercise 4: Integrate Microsoft Graph into the Application
 
@@ -482,9 +474,9 @@ The last step is to incorporate the Microsoft Graph into the application. For th
         public async Task ReloadEvents()
         {
           var graphService = AuthenticationHelper.GetAuthenticatedClient();
-          var request = graphService.Me.Events.Request(new Option[] { 
-            new QueryOption("top", "20"), 
-            new QueryOption("skip", "0") 
+          var request = graphService.Me.Events.Request(new Option[] {
+            new QueryOption("top", "20"),
+            new QueryOption("skip", "0")
           });
           var userEventsCollectionPage = await request.GetAsync();
 
@@ -493,14 +485,14 @@ The last step is to incorporate the Microsoft Graph into the application. For th
           {
             calendarEvents.Add(new CalendarEvent
             {
-              Subject = !string.IsNullOrEmpty(calEvent.Subject) 
-                ? calEvent.Subject 
+              Subject = !string.IsNullOrEmpty(calEvent.Subject)
+                ? calEvent.Subject
                 : string.Empty,
-              Start = !string.IsNullOrEmpty(calEvent.Start.DateTime) 
-                ? DateTime.Parse(calEvent.Start.DateTime) 
+              Start = !string.IsNullOrEmpty(calEvent.Start.DateTime)
+                ? DateTime.Parse(calEvent.Start.DateTime)
                 : new DateTime(),
-              End = !string.IsNullOrEmpty(calEvent.End.DateTime) 
-                ? DateTime.Parse(calEvent.End.DateTime) 
+              End = !string.IsNullOrEmpty(calEvent.End.DateTime)
+                ? DateTime.Parse(calEvent.End.DateTime)
                 : new DateTime()
             });
           }
