@@ -30,13 +30,14 @@ This module has been recorded and is available in the Office Development YouTube
 |        Roles         |                        Author(s)                        |
 | -------------------- | ------------------------------------------------------- |
 | Lab Manuals / Slides | Andrew Connell (Microsoft MVP, Voitanos) @andrewconnell |
-| Sponsor / Support    | Yina Arenas (Microsoft) @yinaa                          |
+| Sponsor / Support    | Yina Arenas (Microsoft) @yina_arenas                    |
 
 ## Version history
 
 | Version |        Date        |                    Comments                    |
 | ------- | ------------------ | ---------------------------------------------- |
-| 1.3     | September 4, 2018  | Revised modules for consistency with other training. |
+| 1.4     | November 2, 2018   | Revised modules for consistency with other training. |
+| 1.3     | September 20, 2018 | 2019Q1 content refresh                         |
 | 1.2     | June 28, 2018      | Added screencast.                              |
 | 1.1     | June 22, 2018      | Rewritten to use latest guidance.              |
 | 1.0     | ~November 24, 2017 | Add Microsoft Graph related product breakouts. |
