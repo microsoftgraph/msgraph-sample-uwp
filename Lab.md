@@ -4,6 +4,10 @@ In this lab you will create a Universal Windows Platform (UWP) application, conf
 
 ## In this lab
 
+- [Exercise 1: Create a Universal Windows Platform (UWP) app](#exercise-1-create-a-universal-windows-platform-uwp-app)
+- [Exercise 2: Register a native application with the Application Registration Portal](#exercise-2-register-a-native-application-with-the-application-registration-portal)
+- [Exercise 3: Extend the app for Azure AD Authentication](#exercise-3-extend-the-app-for-azure-ad-authentication)
+- [Exercise 4: Extend the app for Microsoft Graph](#exercise-4-extend-the-app-for-microsoft-graph)
 
 ## Prerequisites
 
@@ -247,16 +251,25 @@ Now add an event handler for the `SignInCompleted` event on the `AadLogin` contr
     View="SmallProfilePhotoLeft"
     AllowSignInAsDifferentUser="False"
     SignInCompleted="Login_SignInCompleted"
+    SignOutCompleted="Login_SignOutCompleted"
     />
 ```
 
-Then add the following function to the `MainPage` class in `MainPage.xaml.cs`.
+Then add the following functions to the `MainPage` class in `MainPage.xaml.cs`.
 
 ```cs
 private void Login_SignInCompleted(object sender, Microsoft.Toolkit.Uwp.UI.Controls.Graph.SignInEventArgs e)
 {
     // Set the auth state
     SetAuthState(true);
+    // Reload the home page
+    RootFrame.Navigate(typeof(HomePage));
+}
+
+private void Login_SignOutCompleted(object sender, EventArgs e)
+{
+    // Set the auth state
+    SetAuthState(false);
     // Reload the home page
     RootFrame.Navigate(typeof(HomePage));
 }

@@ -1,4 +1,4 @@
-# Building Android Native Apps Demos
+# Building UWP Apps Demos
 
 The following demos can be used either to walk through the process of creating a UWP application or the final solution in each demo can be used as a working sample.
 
