@@ -2,6 +2,7 @@
 *.suo
 *.user
 *.sln.docstates
+.vs/
 
 # Build results
 [Dd]ebug/
@@ -171,3 +172,9 @@ FakesAssemblies/
 
 # MacOS files
 **.DS_Store
+
+## VS Code
+.vscode/
+
+## OAuth settings
+OAuth.resw

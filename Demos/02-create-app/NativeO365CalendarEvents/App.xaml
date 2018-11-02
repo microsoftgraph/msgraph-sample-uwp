@@ -1,6 +1,0 @@
-﻿<Application
-    x:Class="NativeO365CalendarEvents.App"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:NativeO365CalendarEvents">
-</Application>

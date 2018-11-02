@@ -1,219 +1,98 @@
 # Extend the UWP app for Azure AD Authentication
 
-In this demo you will extend the application from the previous demo to support authentication with Azure AD. This is required to obtain the necessary OAuth access token to call the Microsoft Graph. In this step you will integrate the Microsoft Authentication Library (MSAL) into the application.
+In this demo you will extend the application from the previous demo to support authentication with Azure AD. This is required to obtain the necessary OAuth access token to call the Microsoft Graph. In this step you will integrate the [AadLogin](https://docs.microsoft.com/dotnet/api/microsoft.toolkit.uwp.ui.controls.graph.aadlogin?view=win-comm-toolkit-dotnet-stable) control from the [Windows Community Toolkit](https://github.com/Microsoft/WindowsCommunityToolkit) into the application.
 
-> This demo builds off the final product from the previous demo.
+Right-click the **graph-tutorial** project in Solution Explorer and choose **Add > New Item...**. Choose **Resources File (.resw)**, name the file `OAuth.resw` and choose **Add**. When the new file opens in Visual Studio, create two resources as follows.
 
-1. Open the **App.xaml** file.
-1. Add the following markup to the `<Application>` element. This will specify two formatting options as well as define the application ID and MSAL redirect URLs:
+- **Name:** `AppId`, **Value:** the app ID you generated in Application Registration Portal
+- **Name:** `Scopes`, **Value:** `User.Read Calendars.Read`
 
-    ```xml
-    <Application.Resources>
-      <SolidColorBrush x:Key="SampleHeaderBrush" Color="#007ACC" />
-      <SolidColorBrush x:Key="ApplicationPageBackgroundThemeBrush" Color="#1799F0" />
+![A screenshot of the OAuth.resw file in the Visual Studio editor](/Images/edit-resources-01.png)
 
-      <x:String x:Key="ida:ClientID">ENTER_APP_ID</x:String>
-      <x:String x:Key="ida:ReturnUrl">ENTER_APP_CUSTOM_REDIRECT_URI</x:String>
-    </Application.Resources>
-    ```
+> **Important:** If you're using source control such as git, now would be a good time to exclude the `OAuth.resw` file from source control to avoid inadvertently leaking your app ID.
 
-1. Update the `ida:ClientID` & `ida:ReturnUrl` values to those you copied when creating a the Azure AD application in a previous demo.
-1. Add an authentication helper class:
-    1. Right-click the project in the **Solution Explorer** tool window and select **Add > Class**.
-    1. Set the **Name** of the class to **AuthenticationHelper.cs** and select **Add**.
-    1. In the **AuthenticationHelper.cs** file, add the following `using` statements after the default statements added:
+## Configure the AadLogin control
 
-        ```cs
-        using System.Net.Http.Headers;
-        using Windows.Storage;
-        using Microsoft.Identity.Client;
-        ```
+Start by adding code to read the values out of the resources file. Open `MainPage.xaml.cs` and add the following `using` statement to the top of the file.
 
-    1. Update the accessor of the `AuthenticationHelper` class to be public by adding the `public` keyword:
+```cs
+using Microsoft.Toolkit.Services.MicrosoftGraph;
+```
 
-        ```cs
-        public class AuthenticationHelper
-        ```
+Replace the `RootFrame.Navigate(typeof(HomePage));` line with the following code.
 
-    1. Add the following members to the `AuthenticationHelper` class that will be used throughout this class:
+```cs
+// Load OAuth settings
+var oauthSettings = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView("OAuth");
+var appId = oauthSettings.GetString("AppId");
+var scopes = oauthSettings.GetString("Scopes");
 
-        ```cs
-        static string clientId = App.Current.Resources["ida:ClientID"].ToString();
-        public static string[] Scopes = { "User.Read", "Calendars.Read" };
+if (string.IsNullOrEmpty(appId) || string.IsNullOrEmpty(scopes))
+{
+    Notification.Show("Could not load OAuth Settings from resource file.");
+}
+else
+{
+    // Initialize Graph
+    MicrosoftGraphService.Instance.AuthenticationModel = MicrosoftGraphEnums.AuthenticationModel.V2;
+    MicrosoftGraphService.Instance.Initialize(appId,
+        MicrosoftGraphEnums.ServicesToInitialize.UserProfile,
+        scopes.Split(' '));
 
-        public static PublicClientApplication IdentityClientApp = new PublicClientApplication(clientId);
+    // Navigate to HomePage.xaml
+    RootFrame.Navigate(typeof(HomePage));
+}
+```
 
-        public static string TokenForUser = null;
-        public static DateTimeOffset Expiration;
-        public static ApplicationDataContainer _settings = ApplicationData.Current.RoamingSettings;
-        ```
+This code loads the settings from `OAuth.resw` and initializes the global instance of the `MicrosoftGraphService` with those values.
 
-    1. Add the following method `GetTokenForUserAsync()` that will start the interactive authentication process with the current user of the application. If the authentication process is successful, the user's name and email address are stored in Windows roaming storage and the token is returned to the caller:
+Now add an event handler for the `SignInCompleted` event on the `AadLogin` control. Open the `MainPage.xaml` file and replace the existing `<graphControls:AadLogin>` element with the following.
 
-        ```cs
-        internal static async Task<string> GetTokenForUserAsync()
-        {
-          AuthenticationResult authResult;
-          try
-          {
-            authResult = await IdentityClientApp.AcquireTokenSilentAsync(Scopes, IdentityClientApp.Users.First());
-            TokenForUser = authResult.AccessToken;
+```xml
+<graphControls:AadLogin x:Name="Login"
+    HorizontalAlignment="Left"
+    View="SmallProfilePhotoLeft"
+    AllowSignInAsDifferentUser="False"
+    SignInCompleted="Login_SignInCompleted"
+    SignOutCompleted="Login_SignOutCompleted"
+    />
+```
 
-            _settings.Values["userEmail"] = authResult.User.DisplayableId;
-            _settings.Values["userName"] = authResult.User.Name;
-          }
+Then add the following functions to the `MainPage` class in `MainPage.xaml.cs`.
 
-          catch (Exception)
-          {
-            if (TokenForUser == null || Expiration <= DateTimeOffset.UtcNow.AddMinutes(5))
-            {
-              authResult = await IdentityClientApp.AcquireTokenAsync(Scopes);
+```cs
+private void Login_SignInCompleted(object sender, Microsoft.Toolkit.Uwp.UI.Controls.Graph.SignInEventArgs e)
+{
+    // Set the auth state
+    SetAuthState(true);
+    // Reload the home page
+    RootFrame.Navigate(typeof(HomePage));
+}
 
-              TokenForUser = authResult.AccessToken;
-              Expiration = authResult.ExpiresOn;
+private void Login_SignOutCompleted(object sender, EventArgs e)
+{
+    // Set the auth state
+    SetAuthState(false);
+    // Reload the home page
+    RootFrame.Navigate(typeof(HomePage));
+}
+```
 
-              _settings.Values["userEmail"] = authResult.User.DisplayableId;
-              _settings.Values["userName"] = authResult.User.Name;
-            }
-          }
+Finally, in Solution Explorer, expand **HomePage.xaml** and open `HomePage.xaml.cs`. Add the following code after the `this.InitializeComponent();` line.
 
-          return TokenForUser;
-        }
-        ```
+```cs
+if ((App.Current as App).IsAuthenticated)
+{
+    HomePageMessage.Text = "Welcome! Please use the menu to the left to select a view.";
+}
+```
 
-    1. Add the following method `SignOut()` to log the user out:
+Restart the app and click the **Sign In** control at the top of the app. Once you've signed in, the UI should change to indicate that you've successfully signed-in.
 
-        ```cs
-        public static void SignOut()
-        {
-          foreach (var user in IdentityClientApp.Users)
-          {
-            IdentityClientApp.Remove(user);
-          }
+![A screenshot of the app after signing in](/Images/add-aad-auth-01.png)
 
-          TokenForUser = null;
+> **Note:** The `AadLogin` control implements the logic of storing and refreshing the access token for you. The tokens are stored in secure storage and refreshed as needed.
 
-          _settings.Values["userID"] = null;
-          _settings.Values["userEmail"] = null;
-          _settings.Values["userName"] = null;
-        }
-        ```
+## Next steps
 
-1. Update the application's user interface to leverage the Azure AD authentication code you just added:
-    1. In the **Solution Explorer** tool window, expand the **MainPage.xaml** file and double-click the **MainPage.xaml.cs** file:
-
-        ![Screenshot showing the MainPage.xaml.cs file in the Solution Explorer tool window](../../Images/vs-code-project-01.png)
-
-    1. Add the following `using` statements to the end of the existing `using` statements in t he **MainPage.xaml.cs** file:
-
-        ```cs
-        using System.Threading.Tasks;
-        using Windows.Storage;
-        ```
-
-    1. Add the following members to the `MainPage` partial class
-
-        ```cs
-        private bool _connected = false;
-        private string _emailAddress = null;
-        private string _displayName = null;
-        public static ApplicationDataContainer _settings = ApplicationData.Current.RoamingSettings;
-        ```
-
-    1. Add the following method that will run when the application is initialized:
-
-        ```cs
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-          if (!App.Current.Resources.ContainsKey("ida:ClientID"))
-          {
-            InfoText.Text = "Oops - It looks like this app is not registered with Office 365, because we don't see a client id in App.xaml.";
-            ConnectButton.IsEnabled = false;
-          }
-          else
-          {
-            InfoText.Text = "Press the following button to connect to Office 365.";
-            ConnectButton.IsEnabled = true;
-          }
-        }
-        ```
-
-    1. Add the following method that will be used to trigger the authentication process:
-
-        ```cs
-        private async Task<bool> SignInCurrentUserAsync()
-        {
-          var token = await AuthenticationHelper.GetTokenForUserAsync();
-          if (token != null)
-          {
-            Debug.WriteLine("Token: " + token);
-            this._emailAddress = (string)_settings.Values["userEmail"];
-            this._displayName = (string)_settings.Values["userName"];
-            return true;
-          }
-          else
-          {
-            return false;
-          }
-        }
-        ```
-
-    1. Add the following method that acts as the event handler when the **Connect** button is pressed. It will start the sign in/sign out process depending on the current logged in state.
-
-        ```cs
-        private async void ConnectButton_Click(object sender, RoutedEventArgs e)
-        {
-          ProgressBar.Visibility = Visibility.Visible;
-
-          if (!_connected)
-          {
-            if (await SignInCurrentUserAsync())
-            {
-              InfoText.Text = "Hi " + _displayName + " (" + _emailAddress + ")!";
-              ConnectButton.Content = "Disconnect";
-              _connected = true;
-            }
-            else
-            {
-              InfoText.Text = "Oops! We couldn't connect to Office 365. Check your debug output for errors.";
-            }
-          } else
-          {
-            EventList.ItemsSource = null;
-            AuthenticationHelper.SignOut();
-
-            InfoText.Text = "Press the following button to connect to Office 365.";
-            ConnectButton.Content = "Connect";
-
-            _connected = false;
-          }
-
-          ProgressBar.Visibility = Visibility.Collapsed;
-        }
-        ```
-
-    1. Add the following method stub that you will implement later. It is used by the button in the UI that will retrieve events from your Office 365 calendar using the Microsoft Graph:
-
-        ```cs
-        private async void ReloadButton_Click(object sender, RoutedEventArgs e)
-        {
-        }
-        ```
-
-    1. Test the application by pressing **F5**.
-
-        ![Screenshot of the UWP application running in debug mode](../../Images/vs-app-01.png)
-
-    1. After the app loads, press the **Connect** button to initiate the login process:
-
-        ![Screenshot of the Azure AD login prompt](../../Images/vs-app-02.png)
-
-    1. After successfully logging in, you may be prompted to consent to the permissions requested by the application. If prompted, agree to the consent dialog.
-
-    1. After successfully signing in, you will see the application display the current name and email of the signed in user:
-
-        ![Screenshot showing the application after successfully signing into Azure AD](../../Images/vs-app-03.png)
-
-        Now that the application is working with Azure AD, the next step is to implement the Microsoft Graph integration.
-
-    1. Select the **Disconnect** button in the application and close the application.
+Now that you've added authentication, you can continue to the next module, [Extend the UWP app for Microsoft Graph](../04-add-msgraph/README.md).
