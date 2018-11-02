@@ -83,5 +83,13 @@ namespace graph_tutorial
             // Reload the home page
             RootFrame.Navigate(typeof(HomePage));
         }
+
+        private void Login_SignOutCompleted(object sender, EventArgs e)
+        {
+            // Set the auth state
+            SetAuthState(false);
+            // Reload the home page
+            RootFrame.Navigate(typeof(HomePage));
+        }
     }
 }

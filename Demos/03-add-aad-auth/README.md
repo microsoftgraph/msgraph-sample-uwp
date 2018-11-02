@@ -54,16 +54,25 @@ Now add an event handler for the `SignInCompleted` event on the `AadLogin` contr
     View="SmallProfilePhotoLeft"
     AllowSignInAsDifferentUser="False"
     SignInCompleted="Login_SignInCompleted"
+    SignOutCompleted="Login_SignOutCompleted"
     />
 ```
 
-Then add the following function to the `MainPage` class in `MainPage.xaml.cs`.
+Then add the following functions to the `MainPage` class in `MainPage.xaml.cs`.
 
 ```cs
 private void Login_SignInCompleted(object sender, Microsoft.Toolkit.Uwp.UI.Controls.Graph.SignInEventArgs e)
 {
     // Set the auth state
     SetAuthState(true);
+    // Reload the home page
+    RootFrame.Navigate(typeof(HomePage));
+}
+
+private void Login_SignOutCompleted(object sender, EventArgs e)
+{
+    // Set the auth state
+    SetAuthState(false);
     // Reload the home page
     RootFrame.Navigate(typeof(HomePage));
 }

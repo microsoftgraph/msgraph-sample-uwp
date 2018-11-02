@@ -21,6 +21,7 @@
                     View="SmallProfilePhotoLeft"
                     AllowSignInAsDifferentUser="False"
                     SignInCompleted="Login_SignInCompleted"
+                    SignOutCompleted="Login_SignOutCompleted"
                     />
             </NavigationView.Header>
 
