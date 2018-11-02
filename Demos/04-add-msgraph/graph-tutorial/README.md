@@ -22,18 +22,18 @@ If you don't have a Microsoft account, there are a couple of options to get a fr
 
 1. On the **Register your application** page, set the **Application Name** to **UWP Graph Tutorial** and select **Create**.
 
-    ![Screenshot of creating a new app in the App Registration Portal website](../../Images/arp-create-app-01.png)
+    ![Screenshot of creating a new app in the App Registration Portal website](../../../Images/arp-create-app-01.png)
 
 1. On the **UWP Graph Tutorial Registration** page, under the **Properties** section, copy the **Application Id** as you will need it later.
 
-    ![Screenshot of newly created application's ID](../../Images/arp-create-app-02.png)
+    ![Screenshot of newly created application's ID](../../../Images/arp-create-app-02.png)
 
 1. Scroll down to the **Platforms** section.
 
     1. Select **Add Platform**.
     1. In the **Add Platform** dialog, select **Native Application**.
 
-        ![Screenshot creating a platform for the app](../../Images/arp-create-app-03.png)
+        ![Screenshot creating a platform for the app](../../../Images/arp-create-app-03.png)
 
 1. Scroll to the bottom of the page and select **Save**.
 
