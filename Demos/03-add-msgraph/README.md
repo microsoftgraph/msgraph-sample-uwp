@@ -1,192 +1,49 @@
-# Extend the UWP app for Microsoft Graph
+# How to run the completed project
 
-In this demo you will incorporate the Microsoft Graph into the application. For this application, you will use the [Microsoft Graph Client Library for .NET](https://github.com/microsoftgraph/msgraph-sdk-dotnet) to make calls to Microsoft Graph.
+## Prerequisites
 
-## Get calendar events from Outlook
+To run the completed project in this folder, you need the following:
 
-Start by adding a new page for the calendar view. Right-click the **graph-tutorial** project in Solution Explorer and choose **Add > New Item...**. Choose **Blank Page**, enter `CalendarPage.xaml` in the **Name** field, and choose **Add**.
+- [Visual Studio](https://visualstudio.microsoft.com/vs/) installed on your development machine. If you do not have Visual Studio, visit the previous link for download options. (**Note:** This tutorial was written with Visual Studio 2017 version 15.81. The steps in this guide may work with other versions, but that has not been tested.)
+- Either a personal Microsoft account with a mailbox on Outlook.com, or a Microsoft work or school account.
 
-Open `CalendarPage.xaml` and add the following line inside the existing `<Grid>` element.
+If you don't have a Microsoft account, there are a couple of options to get a free account:
 
-```xml
-<TextBlock x:Name="Events" TextWrapping="Wrap"/>
-```
+- You can [sign up for a new personal Microsoft account](https://signup.live.com/signup?wa=wsignin1.0&rpsnv=12&ct=1454618383&rver=6.4.6456.0&wp=MBI_SSL_SHARED&wreply=https://mail.live.com/default.aspx&id=64855&cbcxt=mai&bk=1454618383&uiflavor=web&uaid=b213a65b4fdc484382b6622b3ecaa547&mkt=E-US&lc=1033&lic=1).
+- You can [sign up for the Office 365 Developer Program](https://developer.microsoft.com/office/dev-program) to get a free Office 365 subscription.
 
-Open `CalendarPage.xaml.cs` and add the following `using` statements at the top of the file.
+## Register a native application with the Application Registration Portal
 
-```cs
-using Microsoft.Toolkit.Services.MicrosoftGraph;
-using Microsoft.Toolkit.Uwp.UI.Controls;
-using Newtonsoft.Json;
-```
+1. Open a browser and navigate to the [Application Registration Portal](https://apps.dev.microsoft.com) and login using a **personal account** (aka: Microsoft Account) or **Work or School Account**.
 
-Then add the following functions to the `CalendarPage` class.
+1. Select **Add an app** at the top of the page.
 
-```cs
-private void ShowNotification(string message)
-{
-    // Get the main page that contains the InAppNotification
-    var mainPage = (Window.Current.Content as Frame).Content as MainPage;
+    > **Note:** If you see more than one **Add an app** button on the page, select the one that corresponds to the **Converged apps** list.
 
-    // Get the notification control
-    var notification = mainPage.FindName("Notification") as InAppNotification;
+1. On the **Register your application** page, set the **Application Name** to **UWP Graph Tutorial** and select **Create**.
 
-    notification.Show(message);
-}
+    ![Screenshot of creating a new app in the App Registration Portal website](../../../Images/arp-create-app-01.png)
 
-protected override async void OnNavigatedTo(NavigationEventArgs e)
-{
-    // Get the Graph client from the service
-    var graphClient = MicrosoftGraphService.Instance.GraphProvider;
+1. On the **UWP Graph Tutorial Registration** page, under the **Properties** section, copy the **Application Id** as you will need it later.
 
-    try
-    {
-        // Get the events
-        var events = await graphClient.Me.Events.Request()
-            .Select("subject,organizer,start,end")
-            .OrderBy("createdDateTime DESC")
-            .GetAsync();
+    ![Screenshot of newly created application's ID](../../../Images/arp-create-app-02.png)
 
-        // TEMPORARY: Show the results as JSON
-        Events.Text = JsonConvert.SerializeObject(events.CurrentPage);
-    }
-    catch(Microsoft.Graph.ServiceException ex)
-    {
-        ShowNotification($"Exception getting events: {ex.Message}");
-    }
+1. Scroll down to the **Platforms** section.
 
-    base.OnNavigatedTo(e);
-}
-```
+    1. Select **Add Platform**.
+    1. In the **Add Platform** dialog, select **Native Application**.
 
-Consider with the code in `OnNavigatedTo` is doing.
+        ![Screenshot creating a platform for the app](../../../Images/arp-create-app-03.png)
 
-- The URL that will be called is `/v1.0/me/events`.
-- The `Select` function limits the fields returned for each events to just those the view will actually use.
-- The `OrderBy` function sorts the results by the date and time they were created, with the most recent item being first.
+1. Scroll to the bottom of the page and select **Save**.
 
-Run the app, sign in, and click the **Calendar** navigation item in the left-hand menu. You should see a JSON dump of the events on the user's calendar.
+## Configure the sample
 
-## Display the results
+1. Rename the `OAuth.resw.example` file to `OAuth.resw`.
+1. Open `graph-tutorial.sln` in Visual Studio.
+1. Edit the `OAuth.resw` file in visual studio.Replace `YOUR APP ID HERE` with the **Application Id** you got from the App Registration Portal.
+1. In Solution Explorer, right-click the **graph-tutorial** solution and choose **Restore NuGet Packages**.
 
-Now you can replace the JSON dump with something to display the results in a user-friendly manner. Replace the entire contents of `CalendarPage.xaml` with the following.
+## Run the sample
 
-```xml
-<Page
-    x:Class="graph_tutorial.CalendarPage"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:graph_tutorial"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
-    <Grid>
-        <controls:DataGrid x:Name="EventList" Grid.Row="1"
-                AutoGenerateColumns="False">
-            <controls:DataGrid.Columns>
-                <controls:DataGridTextColumn
-                        Header="Organizer"
-                        Width="SizeToCells"
-                        Binding="{Binding Organizer.EmailAddress.Name}"
-                        FontSize="20" />
-                <controls:DataGridTextColumn
-                        Header="Subject"
-                        Width="SizeToCells"
-                        Binding="{Binding Subject}"
-                        FontSize="20" />
-                <controls:DataGridTextColumn
-                        Header="Start"
-                        Width="SizeToCells"
-                        Binding="{Binding Start.DateTime}"
-                        FontSize="20" />
-                <controls:DataGridTextColumn
-                        Header="End"
-                        Width="SizeToCells"
-                        Binding="{Binding End.DateTime}"
-                        FontSize="20" />
-            </controls:DataGrid.Columns>
-        </controls:DataGrid>
-    </Grid>
-</Page>
-```
-
-This replaces the `TextBlock` with a `DataGrid`. Now open `CalendarPage.xaml.cs` and replace the `Events.Text = JsonConvert.SerializeObject(events.CurrentPage);` line with the following.
-
-```cs
-EventList.ItemsSource = events.CurrentPage.ToList();
-```
-
-If you run the app now and select the calendar, you should get a list of events in a data grid. However, the **Start** and **End** values are displayed in a non-user-friendly manner. You can control how those values are displayed by using a [value converter](https://docs.microsoft.com/uwp/api/Windows.UI.Xaml.Data.IValueConverter).
-
-Right-click the **graph-tutorial** project in Solution Explorer and choose **Add > Class...**. Name the class `GraphDateTimeTimeZoneConverter.cs` and choose **Add**. Replace the entire contents of the file with the following.
-
-```cs
-using Microsoft.Graph;
-using System;
-
-namespace graph_tutorial
-{
-    class GraphDateTimeTimeZoneConverter : Windows.UI.Xaml.Data.IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, string language)
-        {
-            DateTimeTimeZone date = value as DateTimeTimeZone;
-
-            if (date != null)
-            {
-                // Resolve the time zone
-                var timezone = TimeZoneInfo.FindSystemTimeZoneById(date.TimeZone);
-                // Parse method assumes local time, which may not be the case
-                var parsedDateAsLocal = DateTimeOffset.Parse(date.DateTime);
-                // Determine the offset from UTC time for the specific date
-                // Making this call adjusts for DST as appropriate
-                var tzOffset = timezone.GetUtcOffset(parsedDateAsLocal.DateTime);
-                // Create a new DateTimeOffset with the specific offset from UTC
-                var correctedDate = new DateTimeOffset(parsedDateAsLocal.DateTime, tzOffset);
-                // Return the local date time string
-                return correctedDate.LocalDateTime.ToString();
-            }
-
-            return string.Empty;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, string language)
-        {
-            throw new NotImplementedException();
-        }
-    }
-}
-```
-
-This code takes the [dateTimeTimeZone](https://developer.microsoft.com/en-us/graph/docs/api-reference/v1.0/resources/datetimetimezone) structure returned by Microsoft Graph and parses it into a `DateTimeOffset` object. It then converts the value into the user's time zone and returns the formatted value.
-
-Open `CalendarPage.xaml` and add the following **before** the `<Grid>` element.
-
-```xml
-<Page.Resources>
-    <local:GraphDateTimeTimeZoneConverter x:Key="DateTimeTimeZoneValueConverter" />
-</Page.Resources>
-```
-
-Then, replace the `Binding="{Binding Start.DateTime}"` line with the following.
-
-```xml
-Binding="{Binding Start, Converter={StaticResource DateTimeTimeZoneValueConverter}}"
-```
-
-Replace the `Binding="{Binding End.DateTime}"` line with the following.
-
-```xml
-Binding="{Binding End, Converter={StaticResource DateTimeTimeZoneValueConverter}}"
-```
-
-Run the app, sign in, and click the **Calendar** navigation item. You should see the list of events with the **Start** and **End** values formatted.
-
-![A screenshot of the table of events](/Images/add-msgraph-01.png)
-
-## Next steps
-
-Now that you have a working app that calls Microsoft Graph, you can experiment and add new features. Visit the [Microsoft Graph documentation](https://developer.microsoft.com/graph/docs/concepts/overview) to see all of the data you can access with Microsoft Graph.
+In Visual Studio, press **F5** or choose **Debug > Start Debugging**.
