@@ -1,0 +1,7 @@
+{
+  "sourceDirectory": ".\\Demos\\03-add-msgraph",
+  "exampleConfigFile": ".\\graph-tutorial\\OAuth.resw.example",
+  "configFile": "OAuth.resw",
+  "archiveFile": "UwpQuickStart.zip",
+  "zipReadMe": ".\\README.md"
+}
