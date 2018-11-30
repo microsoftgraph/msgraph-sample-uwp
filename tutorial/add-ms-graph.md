@@ -65,7 +65,7 @@ Consider with the code in `OnNavigatedTo` is doing.
 - The `Select` function limits the fields returned for each events to just those the view will actually use.
 - The `OrderBy` function sorts the results by the date and time they were created, with the most recent item being first.
 
-Just before running the app, in order to be able to navigate to this calendar page, modify the `NavView_ItemInvoked` method in the `MainPage.xaml.cs` filee as follows.
+Just before running the app, in order to be able to navigate to this calendar page, modify the `NavView_ItemInvoked` method in the `MainPage.xaml.cs` file to replace the `throw new NotImplementedException();` line with as follows.
 
 ```cs
 case "calendar":
