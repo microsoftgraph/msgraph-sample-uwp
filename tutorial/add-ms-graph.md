@@ -65,7 +65,15 @@ Consider with the code in `OnNavigatedTo` is doing.
 - The `Select` function limits the fields returned for each events to just those the view will actually use.
 - The `OrderBy` function sorts the results by the date and time they were created, with the most recent item being first.
 
-Run the app, sign in, and click the **Calendar** navigation item in the left-hand menu. You should see a JSON dump of the events on the user's calendar.
+Just before running the app, in order to be able to navigate to this calendar page, modify the `NavView_ItemInvoked` method in the `MainPage.xaml.cs` file to replace the `throw new NotImplementedException();` line with as follows.
+
+```cs
+case "calendar":
+    RootFrame.Navigate(typeof(CalendarPage));
+    break;
+```
+
+You can now run the app, sign in, and click the **Calendar** navigation item in the left-hand menu. You should see a JSON dump of the events on the user's calendar.
 
 ## Display the results
 
