@@ -144,4 +144,6 @@ private void NavView_ItemInvoked(NavigationView sender, NavigationViewItemInvoke
 
 Save all of your changes, then press **F5** or select **Debug > Start Debugging** in Visual Studio.
 
+>Note: Make sure you select the appropriate configuration for your machine (ARM, x64, x86).
+
 ![A screenshot of the home page](./images/create-app-01.png)
