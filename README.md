@@ -28,21 +28,23 @@ This module has been recorded and is available in the Office Development YouTube
 
 ## Contributors
 
-|        Roles         |                        Author(s)                        |
-| -------------------- | ------------------------------------------------------- |
-| Lab Manuals / Slides | Andrew Connell (Microsoft MVP, Voitanos) @andrewconnell |
-| Sponsor / Support    | Yina Arenas (Microsoft) @yina_arenas                    |
+|        Roles         |                            Author(s)                             |
+| -------------------- | ---------------------------------------------------------------- |
+| Lab Manuals / Slides | Andrew Connell (Microsoft MVP, Voitanos) @andrewconnell          |
+| QA                   | Julie Turner (Microsoft MVP, Sympraxis Consulting) @juliemturner |
+| Sponsor / Support    | Yina Arenas (Microsoft) @yina_arenas                             |
 
 ## Version history
 
-| Version |        Date        |                    Comments                    |
-| ------- | ------------------ | ---------------------------------------------- |
-| 1.5     | November 27, 2018  | Onboarded to docs.microsoft.com/graph          |
+| Version |        Date        |                       Comments                       |
+| ------- | ------------------ | ---------------------------------------------------- |
+| 1.6     | December 19, 2018  | 2019Q2 content refresh                               |
+| 1.5     | November 27, 2018  | Onboarded to docs.microsoft.com/graph                |
 | 1.4     | November 2, 2018   | Revised modules for consistency with other training. |
-| 1.3     | September 20, 2018 | 2019Q1 content refresh                         |
-| 1.2     | June 28, 2018      | Added screencast.                              |
-| 1.1     | June 22, 2018      | Rewritten to use latest guidance.              |
-| 1.0     | ~November 24, 2017 | Add Microsoft Graph related product breakouts. |
+| 1.3     | September 20, 2018 | 2019Q1 content refresh                               |
+| 1.2     | June 28, 2018      | Added screencast.                                    |
+| 1.1     | June 22, 2018      | Rewritten to use latest guidance.                    |
+| 1.0     | ~November 24, 2017 | Add Microsoft Graph related product breakouts.       |
 
 ## Disclaimer
 
