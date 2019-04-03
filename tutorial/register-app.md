@@ -9,7 +9,7 @@ In this exercise you will create a new Azure AD native application using the App
     > [!NOTE]
     > If you see more than one **Add an app** button on the page, select the one that corresponds to the **Converged apps** list.
 
-1. On the **Register your application** page, set the **Application Name** to **UWP Graph Tutorial** and select **Create**.
+1. On the **Register your application** page, set the **Application Name** to **UWP Graph Tutorial** and select **Create application**.
 
     ![Screenshot of creating a new app in the App Registration Portal website](./images/arp-create-app-01.png)
 
