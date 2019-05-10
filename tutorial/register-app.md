@@ -20,6 +20,6 @@ In this exercise you will create a new Azure AD native application using the Azu
 
     ![A screenshot of the application ID of the new app registration](./images/aad-application-id.png)
 
-1. Select the **Add a Redirect URI** link. On the **Redirect URIs** page, locate the **Suggested Redirect URIs for public clients (mobile, desktop)** section. Select the `urn:ietf:wg:oauth:2.0:oob` URI, then choose **Save**.
+1. Select the **Add a Redirect URI** link. On the **Redirect URIs** page, locate the **Suggested Redirect URIs for public clients (mobile, desktop)** section. If the `urn:ietf:wg:oauth:2.0:oob` URI is available select it, then choose **Save**. If that URI doesn't exist, add it by selecting **Public Client (mobile & desktop)** for Type and entering `urn:ietf:wg:oauth:2.0:oob` for the URI in the Redirect Uri section, then choose **Save**.
 
     ![A screenshot of the Redirect URIs page](./images/aad-redirect-uris.png)
