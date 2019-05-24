@@ -28,16 +28,17 @@ This module has been recorded and is available in the Office Development YouTube
 
 ## Contributors
 
-| Roles                | Author(s)                                                        |
-| -------------------- | ---------------------------------------------------------------- |
-| Lab Manuals / Slides | Andrew Connell (Microsoft MVP, Voitanos) @andrewconnell          |
-| QA                   | Julie Turner (Microsoft MVP, Sympraxis Consulting) @juliemturner |
-| Sponsor / Support    | Yina Arenas (Microsoft) @yina_arenas                             |
+|        Roles         |                                     Author(s)                                     |
+| -------------------- | --------------------------------------------------------------------------------- |
+| Lab Manuals / Slides | Andrew Connell (Microsoft MVP, Voitanos) [@andrewconnell](/andrewconnell)         |
+| QA                   | Julie Turner (Microsoft MVP, Sympraxis Consulting) [@juliemturner](/juliemturner) |
+| Sponsor / Support    | Yina Arenas (Microsoft) [@yina_arenas](//github.com/yina_arenas)                  |
 
 ## Version history
 
-| Version | Date               | Comments                                             |
+| Version |        Date        |                       Comments                       |
 | ------- | ------------------ | ---------------------------------------------------- |
+| 1.8     | May 24, 2019       | 2019Q4 content refresh                               |
 | 1.7     | March 6, 2019      | 2019Q3 content refresh                               |
 | 1.6     | December 19, 2018  | 2019Q2 content refresh                               |
 | 1.5     | November 27, 2018  | Onboarded to docs.microsoft.com/graph                |
