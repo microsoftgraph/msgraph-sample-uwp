@@ -14,7 +14,7 @@ In this exercise you will create a new Azure AD native application using the Azu
     - Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**.
     - Under **Redirect URI**, change the dropdown to **Public client (mobile & desktop)**, and set the value to `urn:ietf:wg:oauth:2.0:oob`.
 
-    ![A screenshot of the Register an application page](./images/aad-register-an-app.png)
+    ![A screenshot of the Register an application page](./images/aad-register-app.png)
 
 1. Choose **Register**. On the **UWP Graph Tutorial** page, copy the value of the **Application (client) ID** and save it, you will need it in the next step.
 
