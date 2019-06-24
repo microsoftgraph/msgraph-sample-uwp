@@ -12,14 +12,10 @@ In this exercise you will create a new Azure AD native application using the Azu
 
     - Set **Name** to `UWP Graph Tutorial`.
     - Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**.
-    - Leave **Redirect URI** empty.
+    - Under **Redirect URI**, change the dropdown to **Public client (mobile & desktop)**, and set the value to `urn:ietf:wg:oauth:2.0:oob`.
 
     ![A screenshot of the Register an application page](./images/aad-register-an-app.png)
 
 1. Choose **Register**. On the **UWP Graph Tutorial** page, copy the value of the **Application (client) ID** and save it, you will need it in the next step.
 
     ![A screenshot of the application ID of the new app registration](./images/aad-application-id.png)
-
-1. Select the **Add a Redirect URI** link. On the **Redirect URIs** page, locate the **Suggested Redirect URIs for public clients (mobile, desktop)** section. If the `urn:ietf:wg:oauth:2.0:oob` URI is available select it, then choose **Save**. If that URI doesn't exist, add it by selecting **Public Client (mobile & desktop)** for Type and entering `urn:ietf:wg:oauth:2.0:oob` for the URI in the Redirect Uri section, then choose **Save**.
-
-    ![A screenshot of the Redirect URIs page](./images/aad-redirect-uris.png)
