@@ -12,6 +12,16 @@ Before you start this tutorial, you should have [Visual Studio](https://visualst
 > [!NOTE]
 > This tutorial was written with Visual Studio 2017 version 15.8.1. The steps in this guide may work with other versions, but that has not been tested.
 
+## Watch the tutorial
+
+This module has been recorded and is available in the Office Development YouTube channel.
+
+<!-- markdownlint-disable MD033 MD034 -->
+<br/>
+
+> [!VIDEO https://www.youtube-nocookie.com/embed/oBYCBxkWMRA]
+<!-- markdownlint-enable MD033 MD034 -->
+
 ## Feedback
 
 Please provide any feedback on this tutorial in the [GitHub repository](https://github.com/microsoftgraph/msgraph-training-uwp).
