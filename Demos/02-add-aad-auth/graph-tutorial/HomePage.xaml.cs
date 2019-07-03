@@ -28,6 +28,11 @@ namespace graph_tutorial
         public HomePage()
         {
             this.InitializeComponent();
+
+            if ((App.Current as App).IsAuthenticated)
+            {
+                HomePageMessage.Text = "Welcome! Please use the menu to the left to select a view.";
+            }
         }
     }
 }

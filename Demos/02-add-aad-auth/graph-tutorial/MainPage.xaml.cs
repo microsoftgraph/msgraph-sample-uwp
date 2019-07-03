@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
+using Microsoft.Toolkit.Services.MicrosoftGraph;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,8 +33,26 @@ namespace graph_tutorial
             // Initialize auth state to false
             SetAuthState(false);
 
-            // Navigate to HomePage.xaml
-            RootFrame.Navigate(typeof(HomePage));
+            // Load OAuth settings
+            var oauthSettings = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView("OAuth");
+            var appId = oauthSettings.GetString("AppId");
+            var scopes = oauthSettings.GetString("Scopes");
+
+            if (string.IsNullOrEmpty(appId) || string.IsNullOrEmpty(scopes))
+            {
+                Notification.Show("Could not load OAuth Settings from resource file.");
+            }
+            else
+            {
+                // Initialize Graph
+                MicrosoftGraphService.Instance.AuthenticationModel = MicrosoftGraphEnums.AuthenticationModel.V2;
+                MicrosoftGraphService.Instance.Initialize(appId,
+                    MicrosoftGraphEnums.ServicesToInitialize.UserProfile,
+                    scopes.Split(' '));
+
+                // Navigate to HomePage.xaml
+                RootFrame.Navigate(typeof(HomePage));
+            }
         }
 
         private void SetAuthState(bool isAuthenticated)
@@ -58,6 +77,22 @@ namespace graph_tutorial
                     RootFrame.Navigate(typeof(HomePage));
                     break;
             }
+        }
+
+        private void Login_SignInCompleted(object sender, Microsoft.Toolkit.Uwp.UI.Controls.Graph.SignInEventArgs e)
+        {
+            // Set the auth state
+            SetAuthState(true);
+            // Reload the home page
+            RootFrame.Navigate(typeof(HomePage));
+        }
+
+        private void Login_SignOutCompleted(object sender, EventArgs e)
+        {
+            // Set the auth state
+            SetAuthState(false);
+            // Reload the home page
+            RootFrame.Navigate(typeof(HomePage));
         }
     }
 }
