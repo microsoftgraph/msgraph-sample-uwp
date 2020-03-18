@@ -42,13 +42,8 @@ namespace GraphTutorial
                 MsalProvider.ClientId = appId;
                 MsalProvider.Scopes = new ScopeSet(scopes.Split(' '));
 
-                // Check signed-in state
-                //var globalProvider = ProviderManager.Instance.GlobalProvider;
-                //SetAuthState(globalProvider != null && globalProvider.State == ProviderState.SignedIn);
-
                 // Handle auth state change
                 ProviderManager.Instance.ProviderUpdated += ProviderUpdated;
-                //globalProvider.StateChanged += AuthStateChanged;
 
                 // Navigate to HomePage.xaml
                 RootFrame.Navigate(typeof(HomePage));
