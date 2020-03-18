@@ -23,6 +23,7 @@ namespace GraphTutorial
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        // <ConstructorSnippet>
         public MainPage()
         {
             this.InitializeComponent();
@@ -49,14 +50,18 @@ namespace GraphTutorial
                 RootFrame.Navigate(typeof(HomePage));
             }
         }
+        // </ConstructorSnippet>
 
+        // <ProviderUpdatedSnippet>
         private void ProviderUpdated(object sender, ProviderUpdatedEventArgs e)
         {
             var globalProvider = ProviderManager.Instance.GlobalProvider;
             SetAuthState(globalProvider != null && globalProvider.State == ProviderState.SignedIn);
             RootFrame.Navigate(typeof(HomePage));
         }
+        // </ProviderUpdatedSnippet>
 
+        // <SetAuthStateSnippet>
         private void SetAuthState(bool isAuthenticated)
         {
             (Application.Current as App).IsAuthenticated = isAuthenticated;
@@ -64,11 +69,13 @@ namespace GraphTutorial
             // Toggle controls that require auth
             Calendar.IsEnabled = isAuthenticated;
         }
+        // </SetAuthStateSnippet>
 
         private void NavView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
         {
             var invokedItem = args.InvokedItem as string;
 
+            // <SwitchStatementSnippet>
             switch (invokedItem.ToLower())
             {
                 case "calendar":
@@ -79,6 +86,7 @@ namespace GraphTutorial
                     RootFrame.Navigate(typeof(HomePage));
                     break;
             }
+            // </SwitchStatementSnippet>
         }
     }
 }

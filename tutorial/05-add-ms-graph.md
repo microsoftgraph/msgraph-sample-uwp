@@ -65,13 +65,9 @@ In this exercise you will incorporate the Microsoft Graph into the application. 
     - The `Select` function limits the fields returned for each events to just those the view will actually use.
     - The `OrderBy` function sorts the results by the date and time they were created, with the most recent item being first.
 
-1. Modify the `NavView_ItemInvoked` method in the `MainPage.xaml.cs` file to replace the `throw new NotImplementedException();` line with as follows.
+1. Modify the `NavView_ItemInvoked` method in the `MainPage.xaml.cs` file to replace the existing `switch` statement with the following.
 
-    ```csharp
-    case "calendar":
-        RootFrame.Navigate(typeof(CalendarPage));
-        break;
-    ```
+    :::code language="csharp" source="../demo/GraphTutorial/MainPage.xaml.cs" id="SwitchStatementSnippet" highlight="4":::
 
 You can now run the app, sign in, and click the **Calendar** navigation item in the left-hand menu. You should see a JSON dump of the events on the user's calendar.
 
@@ -131,65 +127,17 @@ You can now run the app, sign in, and click the **Calendar** navigation item in 
 
 1. Right-click the **GraphTutorial** project in Solution Explorer and select **Add > Class...**. Name the class `GraphDateTimeTimeZoneConverter.cs` and select **Add**. Replace the entire contents of the file with the following.
 
-    ```csharp
-    using Microsoft.Graph;
-    using System;
-
-    namespace GraphTutorial
-    {
-        class GraphDateTimeTimeZoneConverter : Windows.UI.Xaml.Data.IValueConverter
-        {
-            public object Convert(object value, Type targetType, object parameter, string language)
-            {
-                DateTimeTimeZone date = value as DateTimeTimeZone;
-
-                if (date != null)
-                {
-                    // Resolve the time zone
-                    var timezone = TimeZoneInfo.FindSystemTimeZoneById(date.TimeZone);
-                    // Parse method assumes local time, which may not be the case
-                    var parsedDateAsLocal = DateTimeOffset.Parse(date.DateTime);
-                    // Determine the offset from UTC time for the specific date
-                    // Making this call adjusts for DST as appropriate
-                    var tzOffset = timezone.GetUtcOffset(parsedDateAsLocal.DateTime);
-                    // Create a new DateTimeOffset with the specific offset from UTC
-                    var correctedDate = new DateTimeOffset(parsedDateAsLocal.DateTime, tzOffset);
-                    // Return the local date time string
-                    return correctedDate.LocalDateTime.ToString();
-                }
-
-                return string.Empty;
-            }
-
-            public object ConvertBack(object value, Type targetType, object parameter, string language)
-            {
-                throw new NotImplementedException();
-            }
-        }
-    }
-    ```
+    :::code language="csharp" source="../demo/GraphTutorial/GraphDateTimeTimeZoneConverter.xaml.cs" id="ConverterSnippet":::
 
     This code takes the [dateTimeTimeZone](/graph/api/resources/datetimetimezone?view=graph-rest-1.0) structure returned by Microsoft Graph and parses it into a `DateTimeOffset` object. It then converts the value into the user's time zone and returns the formatted value.
 
 1. Open `CalendarPage.xaml` and add the following **before** the `<Grid>` element.
 
-    ```xaml
-    <Page.Resources>
-        <local:GraphDateTimeTimeZoneConverter x:Key="DateTimeTimeZoneValueConverter" />
-    </Page.Resources>
-    ```
+    :::code language="xaml" source="../demo/GraphTutorial/CalendarPage.xaml" id="ResourcesSnippet":::
 
-1. Replace the `Binding="{Binding Start.DateTime}"` line with the following.
+1. Replace the last two `DataGridTextColumn` elements with the following.
 
-    ```xaml
-    Binding="{Binding Start, Converter={StaticResource DateTimeTimeZoneValueConverter}}"
-    ```
-
-1. Replace the `Binding="{Binding End.DateTime}"` line with the following.
-
-    ```xml
-    Binding="{Binding End, Converter={StaticResource DateTimeTimeZoneValueConverter}}"
-    ```
+    :::code language="xaml" source="../demo/GraphTutorial/CalendarPage.xaml" id="BindingSnippet" highlight="4,9":::
 
 1. Run the app, sign in, and click the **Calendar** navigation item. You should see the list of events with the **Start** and **End** values formatted.
 

@@ -8,10 +8,12 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+    <!-- <HomePageGridSnippet> -->
     <Grid>
         <StackPanel>
             <TextBlock FontSize="44" FontWeight="Bold" Margin="0, 12">Microsoft Graph UWP Tutorial</TextBlock>
             <TextBlock x:Name="HomePageMessage">Please sign in to continue.</TextBlock>
         </StackPanel>
     </Grid>
+    <!-- </HomePageGridSnippet> -->
 </Page>

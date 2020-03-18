@@ -22,58 +22,19 @@ In this exercise you will extend the application from the previous exercise to s
 
 1. Replace the existing constructor with the following.
 
-    ```csharp
-    public MainPage()
-    {
-        this.InitializeComponent();
-
-        // Load OAuth settings
-        var oauthSettings = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView("OAuth");
-        var appId = oauthSettings.GetString("AppId");
-        var scopes = oauthSettings.GetString("Scopes");
-
-        if (string.IsNullOrEmpty(appId) || string.IsNullOrEmpty(scopes))
-        {
-            Notification.Show("Could not load OAuth Settings from resource file.");
-        }
-        else
-        {
-            // Configure MSAL provider
-            MsalProvider.ClientId = appId;
-            MsalProvider.Scopes = new ScopeSet(scopes.Split(' '));
-
-            // Handle auth state change
-            ProviderManager.Instance.ProviderUpdated += ProviderUpdated;
-
-            // Navigate to HomePage.xaml
-            RootFrame.Navigate(typeof(HomePage));
-        }
-    }
-    ```
+    :::code language="csharp" source="../demo/GraphTutorial/MainPage.xaml.cs" id="ConstructorSnippet":::
 
     This code loads the settings from `OAuth.resw` and initializes the MSAL provider with those values.
 
 1. Now add an event handler for the `ProviderUpdated` event on the `ProviderManager`. Add the following function to the `MainPage` class.
 
-    ```csharp
-    private void ProviderUpdated(object sender, ProviderUpdatedEventArgs e)
-    {
-        var globalProvider = ProviderManager.Instance.GlobalProvider;
-        SetAuthState(globalProvider != null && globalProvider.State == ProviderState.SignedIn);
-        RootFrame.Navigate(typeof(HomePage));
-    }
-    ```
+    :::code language="csharp" source="../demo/GraphTutorial/MainPage.xaml.cs" id="ProviderUpdatedSnippet":::
 
     This event triggers when the provider changes, or when the provider state changes.
 
-1. In Solution Explorer, expand **HomePage.xaml** and open `HomePage.xaml.cs`. Add the following code after the `this.InitializeComponent();` line.
+1. In Solution Explorer, expand **HomePage.xaml** and open `HomePage.xaml.cs`. Replace the existing constructor with the following.
 
-    ```csharp
-    if ((App.Current as App).IsAuthenticated)
-    {
-        HomePageMessage.Text = "Welcome! Please use the menu to the left to select a view.";
-    }
-    ```
+    :::code language="csharp" source="../demo/GraphTutorial/HomePage.xaml.cs" id="ConstructorSnippet":::
 
 1. Restart the app and click the **Sign In** control at the top of the app. Once you've signed in, the UI should change to indicate that you've successfully signed-in.
 

@@ -1,4 +1,8 @@
-﻿using Microsoft.Graph;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+// <ConverterSnippet>
+using Microsoft.Graph;
 using System;
 
 namespace GraphTutorial
@@ -33,3 +37,4 @@ namespace GraphTutorial
         }
     }
 }
+// </ConverterSnippet>

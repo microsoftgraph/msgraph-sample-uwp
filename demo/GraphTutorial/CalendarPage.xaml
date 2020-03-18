@@ -9,9 +9,11 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+    <!-- <ResourcesSnippet> -->
     <Page.Resources>
         <local:GraphDateTimeTimeZoneConverter x:Key="DateTimeTimeZoneValueConverter" />
     </Page.Resources>
+    <!-- </ResourcesSnippet> -->
 
     <Grid>
         <controls:DataGrid x:Name="EventList" Grid.Row="1"
@@ -27,6 +29,7 @@
                         Width="SizeToCells"
                         Binding="{Binding Subject}"
                         FontSize="20" />
+                <!-- <BindingSnippet> -->
                 <controls:DataGridTextColumn
                         Header="Start"
                         Width="SizeToCells"
@@ -37,6 +40,7 @@
                         Width="SizeToCells"
                         Binding="{Binding End, Converter={StaticResource DateTimeTimeZoneValueConverter}}"
                         FontSize="20" />
+                <!-- </BindingSnippet> -->
             </controls:DataGrid.Columns>
         </controls:DataGrid>
     </Grid>

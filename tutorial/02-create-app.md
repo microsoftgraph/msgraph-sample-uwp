@@ -43,80 +43,17 @@ In this section you'll create the UI for the app.
 
 1. Define the layout for the main page. Open `MainPage.xaml` and replace its entire contents with the following.
 
-    ```xaml
-    <Page
-        x:Class="GraphTutorial.MainPage"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="using:GraphTutorial"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-        xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
-        xmlns:providers="using:Microsoft.Toolkit.Graph.Providers"
-        xmlns:wgt="using:Microsoft.Toolkit.Graph.Controls"
-        mc:Ignorable="d"
-        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
-        <Interactivity:Interaction.Behaviors>
-            <providers:InteractiveProviderBehavior x:Name="MsalProvider" />
-        </Interactivity:Interaction.Behaviors>
-
-        <Grid>
-            <NavigationView x:Name="NavView"
-                IsSettingsVisible="False"
-                ItemInvoked="NavView_ItemInvoked">
-
-                <NavigationView.Header>
-                    <wgt:LoginButton x:Name="Login"
-                                     VerticalAlignment="Top"
-                                     HorizontalAlignment="Right" />
-                </NavigationView.Header>
-
-                <NavigationView.MenuItems>
-                    <NavigationViewItem Content="Home" x:Name="Home" Tag="home">
-                        <NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xE10F;"/>
-                        </NavigationViewItem.Icon>
-                    </NavigationViewItem>
-                    <NavigationViewItem Content="Calendar" x:Name="Calendar" Tag="calendar">
-                        <NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xE163;"/>
-                        </NavigationViewItem.Icon>
-                    </NavigationViewItem>
-                </NavigationView.MenuItems>
-
-                <StackPanel>
-                    <controls:InAppNotification x:Name="Notification" ShowDismissButton="true" />
-                    <Frame x:Name="RootFrame" Margin="24, 0" />
-                </StackPanel>
-            </NavigationView>
-        </Grid>
-    </Page>
-    ```
+    :::code language="xaml" source="../demo/GraphTutorial/MainPage.xaml" id="MainPageXamlSnippet":::
 
     This defines a basic [NavigationView](/uwp/api/windows.ui.xaml.controls.navigationview) with **Home** and **Calendar** navigation links to act as the main view of the app. It also adds a [LoginButton](https://github.com/windows-toolkit/Graph-Controls) control in the header of the view. That control will allow the user to sign in and out. The control isn't fully enabled yet, you will configure it in a later exercise.
 
-1. Right-click the **graph-tutorial** project in Solution Explorer and select **Add > New Item...**. Choose **Blank Page**, enter `HomePage.xaml` in the **Name** field, and select **Add**. Add the following code inside the `<Grid>` element in the file.
+1. Right-click the **graph-tutorial** project in Solution Explorer and select **Add > New Item...**. Choose **Blank Page**, enter `HomePage.xaml` in the **Name** field, and select **Add**. Replace the existing `<Grid>` element in the file with the following.
 
-    ```xaml
-    <StackPanel>
-        <TextBlock FontSize="44" FontWeight="Bold" Margin="0, 12">Microsoft Graph UWP Tutorial</TextBlock>
-        <TextBlock x:Name="HomePageMessage">Please sign in to continue.</TextBlock>
-    </StackPanel>
-    ```
+    :::code language="xaml" source="../demo/GraphTutorial/HomePage.xaml" id="HomePageGridSnippet" highlight="2-5":::
 
 1. Expand **MainPage.xaml** in Solution Explorer and open `MainPage.xaml.cs`. Add the following function to the `MainPage` class to manage authentication state.
 
-    ```csharp
-    private void SetAuthState(bool isAuthenticated)
-    {
-        (App.Current as App).IsAuthenticated = isAuthenticated;
-
-        // Toggle controls that require auth
-        Calendar.IsEnabled = isAuthenticated;
-    }
-    ```
+    :::code language="csharp" source="../demo/GraphTutorial/MainPage.xaml.cs" id="SetAuthStateSnippet":::
 
 1. Add the following code to the `MainPage()` constructor **after** the `this.InitializeComponent();` line.
 
