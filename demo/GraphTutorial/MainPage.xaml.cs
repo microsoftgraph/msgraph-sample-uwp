@@ -25,6 +25,40 @@ namespace GraphTutorial
         public MainPage()
         {
             this.InitializeComponent();
+
+            // Configure MSAL provider
+            // TEMPORARY
+            MsalProvider.ClientId = "11111111-1111-1111-1111-111111111111";
+
+            // Initialize auth state to false
+            SetAuthState(false);
+
+            // Navigate to HomePage.xaml
+            RootFrame.Navigate(typeof(HomePage));
+        }
+
+        private void SetAuthState(bool isAuthenticated)
+        {
+            (Application.Current as App).IsAuthenticated = isAuthenticated;
+
+            // Toggle controls that require auth
+            Calendar.IsEnabled = isAuthenticated;
+        }
+
+        private void NavView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
+        {
+            var invokedItem = args.InvokedItem as string;
+
+            switch (invokedItem.ToLower())
+            {
+                case "calendar":
+                    throw new NotImplementedException();
+                    break;
+                case "home":
+                default:
+                    RootFrame.Navigate(typeof(HomePage));
+                    break;
+            }
         }
     }
 }
