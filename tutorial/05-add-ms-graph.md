@@ -127,7 +127,7 @@ You can now run the app, sign in, and click the **Calendar** navigation item in 
 
 1. Right-click the **GraphTutorial** project in Solution Explorer and select **Add > Class...**. Name the class `GraphDateTimeTimeZoneConverter.cs` and select **Add**. Replace the entire contents of the file with the following.
 
-    :::code language="csharp" source="../demo/GraphTutorial/GraphDateTimeTimeZoneConverter.xaml.cs" id="ConverterSnippet":::
+    :::code language="csharp" source="../demo/GraphTutorial/GraphDateTimeTimeZoneConverter.cs" id="ConverterSnippet":::
 
     This code takes the [dateTimeTimeZone](/graph/api/resources/datetimetimezone?view=graph-rest-1.0) structure returned by Microsoft Graph and parses it into a `DateTimeOffset` object. It then converts the value into the user's time zone and returns the formatted value.
 
