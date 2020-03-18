@@ -121,12 +121,12 @@ In this section you'll create the UI for the app.
 1. Add the following code to the `MainPage()` constructor **after** the `this.InitializeComponent();` line.
 
     ```csharp
+    // Initialize auth state to false
+    SetAuthState(false);
+
     // Configure MSAL provider
     // TEMPORARY
     MsalProvider.ClientId = "11111111-1111-1111-1111-111111111111";
-
-    // Initialize auth state to false
-    SetAuthState(false);
 
     // Navigate to HomePage.xaml
     RootFrame.Navigate(typeof(HomePage));

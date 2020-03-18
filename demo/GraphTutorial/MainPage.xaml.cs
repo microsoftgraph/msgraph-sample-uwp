@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Toolkit.Graph.Providers;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -26,14 +27,38 @@ namespace GraphTutorial
         {
             this.InitializeComponent();
 
-            // Configure MSAL provider  
-            // TEMPORARY
-            MsalProvider.ClientId = "11111111-1111-1111-1111-111111111111";
+            // Load OAuth settings
+            var oauthSettings = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView("OAuth");
+            var appId = oauthSettings.GetString("AppId");
+            var scopes = oauthSettings.GetString("Scopes");
 
-            // Initialize auth state to false
-            SetAuthState(false);
+            if (string.IsNullOrEmpty(appId) || string.IsNullOrEmpty(scopes))
+            {
+                Notification.Show("Could not load OAuth Settings from resource file.");
+            }
+            else
+            {
+                // Configure MSAL provider  
+                MsalProvider.ClientId = appId;
+                MsalProvider.Scopes = new ScopeSet(scopes.Split(' '));
 
-            // Navigate to HomePage.xaml
+                // Check signed-in state
+                //var globalProvider = ProviderManager.Instance.GlobalProvider;
+                //SetAuthState(globalProvider != null && globalProvider.State == ProviderState.SignedIn);
+
+                // Handle auth state change
+                ProviderManager.Instance.ProviderUpdated += ProviderUpdated;
+                //globalProvider.StateChanged += AuthStateChanged;
+
+                // Navigate to HomePage.xaml
+                RootFrame.Navigate(typeof(HomePage));
+            }
+        }
+
+        private void ProviderUpdated(object sender, ProviderUpdatedEventArgs e)
+        {
+            var globalProvider = ProviderManager.Instance.GlobalProvider;
+            SetAuthState(globalProvider != null && globalProvider.State == ProviderState.SignedIn);
             RootFrame.Navigate(typeof(HomePage));
         }
 
