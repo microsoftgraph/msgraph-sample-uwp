@@ -26,7 +26,7 @@ namespace GraphTutorial
         {
             this.InitializeComponent();
 
-            // Configure MSAL provider
+            // Configure MSAL provider  
             // TEMPORARY
             MsalProvider.ClientId = "11111111-1111-1111-1111-111111111111";
 
