@@ -68,7 +68,7 @@ In this exercise you will extend the application from the previous exercise to s
 
 1. In Solution Explorer, expand **HomePage.xaml** and open `HomePage.xaml.cs`. Add the following code after the `this.InitializeComponent();` line.
 
-    ```cs
+    ```csharp
     if ((App.Current as App).IsAuthenticated)
     {
         HomePageMessage.Text = "Welcome! Please use the menu to the left to select a view.";
