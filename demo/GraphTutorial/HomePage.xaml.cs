@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,6 +25,7 @@ namespace GraphTutorial
     /// </summary>
     public sealed partial class HomePage : Page
     {
+        // <ConstructorSnippet>
         public HomePage()
         {
             this.InitializeComponent();
@@ -31,5 +35,6 @@ namespace GraphTutorial
                 HomePageMessage.Text = "Welcome! Please use the menu to the left to select a view.";
             }
         }
+        // </ConstructorSnippet>
     }
 }
