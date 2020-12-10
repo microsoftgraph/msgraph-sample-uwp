@@ -166,16 +166,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.2.9</Version>
+      <Version>6.2.11</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Graph.Controls">
-      <Version>6.1.0-preview1</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Toolkit.Uwp.Ui.Controls">
-      <Version>6.0.0</Version>
+      <Version>7.0.0-preview2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.Ui.Controls.DataGrid">
-      <Version>6.0.0</Version>
+      <Version>7.0.0-preview4</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

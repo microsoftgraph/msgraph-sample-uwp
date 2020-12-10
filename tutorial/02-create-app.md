@@ -19,15 +19,13 @@ In this section you'll create a new UWP app.
 
 Before moving on, install some additional NuGet packages that you will use later.
 
-- [Microsoft.Toolkit.Uwp.Ui.Controls](https://www.nuget.org/packages/Microsoft.Toolkit.Uwp.Ui.Controls/) to add some UI controls for in-app notifications and loading indicators.
 - [Microsoft.Toolkit.Uwp.Ui.Controls.DataGrid](https://www.nuget.org/packages/Microsoft.Toolkit.Uwp.Ui.Controls.DataGrid/) to display the information returned by Microsoft Graph.
 - [Microsoft.Toolkit.Graph.Controls](https://www.nuget.org/packages/Microsoft.Toolkit.Graph.Controls) to handle login and access token retrieval.
 
 1. Select **Tools > NuGet Package Manager > Package Manager Console**. In the Package Manager Console, enter the following commands.
 
     ```powershell
-    Install-Package Microsoft.Toolkit.Uwp.Ui.Controls -Version 6.0.0
-    Install-Package Microsoft.Toolkit.Uwp.Ui.Controls.DataGrid -Version 6.0.0
+    Install-Package Microsoft.Toolkit.Uwp.Ui.Controls.DataGrid -IncludePrerelease
     Install-Package Microsoft.Toolkit.Graph.Controls -IncludePrerelease
     ```
 
