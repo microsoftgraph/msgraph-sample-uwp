@@ -41,29 +41,69 @@ In this exercise you will incorporate the Microsoft Graph into the application. 
 
         try
         {
+            // Get the user's mailbox settings to determine
+            // their time zone
+            var user = await graphClient.Me.Request()
+                .Select(u => new { u.MailboxSettings })
+                .GetAsync();
+
+            var startOfWeek = GetUtcStartOfWeekInTimeZone(DateTime.Today, user.MailboxSettings.TimeZone);
+            var endOfWeek = startOfWeek.AddDays(7);
+
+            var queryOptions = new List<QueryOption>
+            {
+                new QueryOption("startDateTime", startOfWeek.ToString("o")),
+                new QueryOption("endDateTime", endOfWeek.ToString("o"))
+            };
+
             // Get the events
-            var events = await graphClient.Me.Events.Request()
-                .Select("subject,organizer,start,end")
-                .OrderBy("createdDateTime DESC")
+            var events = await graphClient.Me.CalendarView.Request(queryOptions)
+                .Header("Prefer", $"outlook.timezone=\"{user.MailboxSettings.TimeZone}\"")
+                .Select(ev => new
+                {
+                    ev.Subject,
+                    ev.Organizer,
+                    ev.Start,
+                    ev.End
+                })
+                .OrderBy("start/dateTime")
+                .Top(50)
                 .GetAsync();
 
             // TEMPORARY: Show the results as JSON
             Events.Text = JsonConvert.SerializeObject(events.CurrentPage);
         }
-        catch(Microsoft.Graph.ServiceException ex)
+        catch (Microsoft.Graph.ServiceException ex)
         {
             ShowNotification($"Exception getting events: {ex.Message}");
         }
 
         base.OnNavigatedTo(e);
     }
+
+    private static DateTime GetUtcStartOfWeekInTimeZone(DateTime today, string timeZoneId)
+    {
+        TimeZoneInfo userTimeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+
+        // Assumes Sunday as first day of week
+        int diff = System.DayOfWeek.Sunday - today.DayOfWeek;
+
+        // create date as unspecified kind
+        var unspecifiedStart = DateTime.SpecifyKind(today.AddDays(diff), DateTimeKind.Unspecified);
+
+        // convert to UTC
+        return TimeZoneInfo.ConvertTimeToUtc(unspecifiedStart, userTimeZone);
+    }
     ```
 
     Consider with the code in `OnNavigatedTo` is doing.
 
-    - The URL that will be called is `/v1.0/me/events`.
-    - The `Select` function limits the fields returned for each events to just those the view will actually use.
-    - The `OrderBy` function sorts the results by the date and time they were created, with the most recent item being first.
+    - The URL that will be called is `/me/calendarview`.
+        - The `startDateTime` and `endDateTime` parameters define the start and end of the calendar view.
+        - The `Prefer: outlook.timezone` header causes the `start` and `end` of the events to be returned in the user's time zone.
+        - The `Select` function limits the fields returned for each event to just those the app will actually use.
+        - The `OrderBy` function sorts the results by the start date and time.
+        - The `Top` function requests at most 50 events.
 
 1. Modify the `NavView_ItemInvoked` method in the `MainPage.xaml.cs` file to replace the existing `switch` statement with the following.
 
