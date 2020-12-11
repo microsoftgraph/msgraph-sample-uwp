@@ -15,6 +15,7 @@ In this exercise you will incorporate the Microsoft Graph into the application. 
 1. Open `CalendarPage.xaml.cs` and add the following `using` statements at the top of the file.
 
     ```csharp
+    using Microsoft.Graph;
     using Microsoft.Toolkit.Graph.Providers;
     using Microsoft.Toolkit.Uwp.UI.Controls;
     using Newtonsoft.Json;
@@ -73,7 +74,7 @@ In this exercise you will incorporate the Microsoft Graph into the application. 
             // TEMPORARY: Show the results as JSON
             Events.Text = JsonConvert.SerializeObject(events.CurrentPage);
         }
-        catch (Microsoft.Graph.ServiceException ex)
+        catch (ServiceException ex)
         {
             ShowNotification($"Exception getting events: {ex.Message}");
         }
@@ -107,7 +108,21 @@ In this exercise you will incorporate the Microsoft Graph into the application. 
 
 1. Modify the `NavView_ItemInvoked` method in the `MainPage.xaml.cs` file to replace the existing `switch` statement with the following.
 
-    :::code language="csharp" source="../demo/GraphTutorial/MainPage.xaml.cs" id="SwitchStatementSnippet" highlight="4":::
+    ```csharp
+    switch (invokedItem.ToLower())
+    {
+        case "new event":
+            throw new NotImplementedException();
+            break;
+        case "calendar":
+            RootFrame.Navigate(typeof(CalendarPage));
+            break;
+        case "home":
+        default:
+            RootFrame.Navigate(typeof(HomePage));
+            break;
+    }
+    ```
 
 You can now run the app, sign in, and click the **Calendar** navigation item in the left-hand menu. You should see a JSON dump of the events on the user's calendar.
 

@@ -83,7 +83,7 @@ namespace GraphTutorial
 
                 EventList.ItemsSource = events.CurrentPage.ToList();
             }
-            catch (Microsoft.Graph.ServiceException ex)
+            catch (ServiceException ex)
             {
                 ShowNotification($"Exception getting events: {ex.Message}");
             }
