@@ -62,7 +62,7 @@ namespace GraphTutorial
 
         // Value of the Start date picker
         private DateTimeOffset _startDate = DateTimeOffset.Now;
-        public DateTimeOffset StartDate 
+        public DateTimeOffset StartDate
         {
             get { return _startDate; }
             set
@@ -74,9 +74,9 @@ namespace GraphTutorial
 
         // Value of the Start time picker
         private TimeSpan _startTime = TimeSpan.Zero;
-        public TimeSpan StartTime 
+        public TimeSpan StartTime
         {
-            get { return _startTime; } 
+            get { return _startTime; }
             set
             {
                 _startTime = value;
@@ -86,7 +86,7 @@ namespace GraphTutorial
 
         // Value of the End date picker
         private DateTimeOffset _endDate = DateTimeOffset.Now;
-        public DateTimeOffset EndDate 
+        public DateTimeOffset EndDate
         {
             get { return _endDate; }
             set
@@ -98,7 +98,7 @@ namespace GraphTutorial
 
         // Value of the End time picker
         private TimeSpan _endTime = TimeSpan.Zero;
-        public TimeSpan EndTime 
+        public TimeSpan EndTime
         {
             get { return _endTime; }
             set
@@ -110,9 +110,9 @@ namespace GraphTutorial
 
         // Value of the Body text box
         private string _body = "";
-        public string Body 
+        public string Body
         {
-            get { return _body; } 
+            get { return _body; }
             set
             {
                 _body = value;
@@ -125,7 +125,7 @@ namespace GraphTutorial
         {
             // Use the year, month, and day from the supplied DateTimeOffset
             // to create a new DateTime at midnight
-            var dt = new DateTime(StartDate.Year, StartDate.Month, StartDate.Day);
+            var dt = new DateTime(date.Year, date.Month, date.Day);
 
             // Add the TimeSpan, and use the user's timezone offset
             return new DateTimeOffset(dt + time, _userTimeZone.BaseUtcOffset);
@@ -244,7 +244,7 @@ namespace GraphTutorial
                 if (entry is Person)
                 {
                     var person = entry as Person;
-                    
+
                     attendeeList.Add(new Attendee
                     {
                         Type = AttendeeType.Required,
