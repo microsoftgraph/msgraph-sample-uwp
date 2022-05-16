@@ -2,9 +2,9 @@
 // Licensed under the MIT License.
 
 using Microsoft.Graph;
-using Microsoft.Toolkit.Graph.Providers;
+using CommunityToolkit.Authentication;
+using CommunityToolkit.Graph.Extensions;
 using Microsoft.Toolkit.Uwp.UI.Controls;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -48,7 +48,7 @@ namespace GraphTutorial
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             // Get the Graph client from the provider
-            var graphClient = ProviderManager.Instance.GlobalProvider.Graph;
+            var graphClient = ProviderManager.Instance.GlobalProvider.GetClient();
 
             try
             {

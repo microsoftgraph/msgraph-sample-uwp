@@ -1,12 +1,13 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using Microsoft.Toolkit.Graph.Providers;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using CommunityToolkit.Authentication;
+using CommunityToolkit.Graph.Extensions;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -43,11 +44,10 @@ namespace GraphTutorial
             else
             {
                 // Configure MSAL provider  
-                MsalProvider.ClientId = appId;
-                MsalProvider.Scopes = new ScopeSet(scopes.Split(' '));
+                ProviderManager.Instance.GlobalProvider = new MsalProvider(appId, scopes.Split(' '));
 
                 // Handle auth state change
-                ProviderManager.Instance.ProviderUpdated += ProviderUpdated;
+                ProviderManager.Instance.ProviderStateChanged += ProviderUpdated;
 
                 // Navigate to HomePage.xaml
                 RootFrame.Navigate(typeof(HomePage));
@@ -56,7 +56,7 @@ namespace GraphTutorial
         // </ConstructorSnippet>
 
         // <ProviderUpdatedSnippet>
-        private void ProviderUpdated(object sender, ProviderUpdatedEventArgs e)
+        private void ProviderUpdated(object sender, ProviderStateChangedEventArgs e)
         {
             var globalProvider = ProviderManager.Instance.GlobalProvider;
             SetAuthState(globalProvider != null && globalProvider.State == ProviderState.SignedIn);

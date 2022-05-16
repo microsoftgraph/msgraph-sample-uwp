@@ -172,14 +172,23 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.2.11</Version>
+    <PackageReference Include="CommunityToolkit.Authentication.Msal">
+      <Version>7.1.1</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.Toolkit.Graph.Controls">
-      <Version>7.0.0-preview2</Version>
+    <PackageReference Include="CommunityToolkit.Graph.Uwp">
+      <Version>7.1.1</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
+      <Version>6.2.13</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Toolkit.Uwp.UI">
+      <Version>7.1.2</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls">
+      <Version>7.1.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.Ui.Controls.DataGrid">
-      <Version>7.0.0-preview4</Version>
+      <Version>7.1.2</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

@@ -12,13 +12,9 @@
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:providers="using:Microsoft.Toolkit.Graph.Providers"
-    xmlns:wgt="using:Microsoft.Toolkit.Graph.Controls"  
+    xmlns:wgt="using:CommunityToolkit.Graph.Uwp.Controls"  
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
-    <Interactivity:Interaction.Behaviors>
-        <providers:InteractiveProviderBehavior x:Name="MsalProvider" />
-    </Interactivity:Interaction.Behaviors>
 
     <Grid>
         <NavigationView x:Name="NavView"
