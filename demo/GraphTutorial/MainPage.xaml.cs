@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using CommunityToolkit.Authentication;
 using CommunityToolkit.Graph.Extensions;
+using Microsoft.Identity.Client;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -43,8 +44,11 @@ namespace GraphTutorial
             }
             else
             {
-                // Configure MSAL provider  
-                ProviderManager.Instance.GlobalProvider = new MsalProvider(appId, scopes.Split(' '));
+                // Configure MSAL provider
+                var msalClient = PublicClientApplicationBuilder.Create(appId)
+                    .WithRedirectUri("https://login.microsoftonline.com/common/oauth2/nativeclient")
+                    .Build();
+                ProviderManager.Instance.GlobalProvider = new MsalProvider(msalClient, scopes.Split(' '));
 
                 // Handle auth state change
                 ProviderManager.Instance.ProviderStateChanged += ProviderUpdated;
