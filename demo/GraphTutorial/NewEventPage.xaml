@@ -2,7 +2,7 @@
      Licensed under the MIT License. -->
     
 <!-- <NewEventPageXamlSnippet> -->
-<Page xmlns:wgt="using:Microsoft.Toolkit.Graph.Controls" 
+<Page xmlns:wgt="using:CommunityToolkit.Graph.Uwp.Controls" 
     x:Class="GraphTutorial.NewEventPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"

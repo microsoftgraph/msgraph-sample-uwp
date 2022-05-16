@@ -18,9 +18,10 @@ using Windows.UI.Xaml.Navigation;
 
 // <UsingStatementsSnippet>
 using System.ComponentModel;
+using CommunityToolkit.Authentication;
+using CommunityToolkit.Graph.Extensions;
 using Microsoft.Graph;
 using Microsoft.Graph.Extensions;
-using Microsoft.Toolkit.Graph.Providers;
 using Microsoft.Toolkit.Uwp.UI.Controls;
 using System.Runtime.CompilerServices;
 // </UsingStatementsSnippet>
@@ -171,7 +172,7 @@ namespace GraphTutorial
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             // Get the Graph client from the provider
-            var graphClient = ProviderManager.Instance.GlobalProvider.Graph;
+            var graphClient = ProviderManager.Instance.GlobalProvider.GetClient();
 
             try
             {
@@ -213,7 +214,7 @@ namespace GraphTutorial
             CreateProgress.Visibility = Visibility.Visible;
 
             // Get the Graph client from the provider
-            var graphClient = ProviderManager.Instance.GlobalProvider.Graph;
+            var graphClient = ProviderManager.Instance.GlobalProvider.GetClient();
 
             // Initialize a new Event object with the required fields
             var newEvent = new Event
@@ -250,7 +251,7 @@ namespace GraphTutorial
                         Type = AttendeeType.Required,
                         EmailAddress = new EmailAddress
                         {
-                            Address = person.EmailAddresses.First().Address
+                            Address = person.ScoredEmailAddresses.First().Address
                         }
                     });
                 }
