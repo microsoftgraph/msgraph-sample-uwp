@@ -25,6 +25,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    
+    - name: Copy settings file
+      run: |
+        copy ${{env.SOLUTION_FILE_PATH}}\GraphTutorial\OAuth.resw.example ${{env.SOLUTION_FILE_PATH}}\GraphTutorial\OAuth.resw
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
