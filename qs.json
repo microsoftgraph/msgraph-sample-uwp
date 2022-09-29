@@ -1,7 +1,0 @@
-{
-  "sourceDirectory": "./demo",
-  "exampleConfigFile": "./GraphTutorial/OAuth.resw.example",
-  "configFile": "OAuth.resw",
-  "archiveFile": "UwpQuickStart.zip",
-  "zipReadMe": "./README.md"
-}
