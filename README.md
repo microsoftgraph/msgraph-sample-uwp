@@ -42,6 +42,7 @@ If you don't have a Microsoft account, there are a couple of options to get a fr
 
 ## Configure the sample
 
+1. Rename the OAuth.resw.example file to OAuth.resw.
 1. Open `graph-tutorial.sln` in Visual Studio.
 1. Edit the `OAuth.resw` file in visual studio.  Replace `YOUR_APP_ID_HERE` with the **Application Id** you got from the App Registration Portal.
 1. In Solution Explorer, right-click the **graph-tutorial** solution and choose **Restore NuGet Packages**.
