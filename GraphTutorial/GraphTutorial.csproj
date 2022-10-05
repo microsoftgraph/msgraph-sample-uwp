@@ -190,9 +190,6 @@
     <PackageReference Include="Microsoft.Toolkit.Uwp.Ui.Controls.DataGrid">
       <Version>7.1.2</Version>
     </PackageReference>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>13.0.2-beta2</Version>
-    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <PRIResource Include="OAuth.resw" />

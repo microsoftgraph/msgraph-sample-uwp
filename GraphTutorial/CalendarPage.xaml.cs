@@ -1,24 +1,16 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using CommunityToolkit.Authentication;
+using CommunityToolkit.Graph.Extensions;
+using Microsoft.Graph;
+using Microsoft.Toolkit.Uwp.UI.Controls;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Microsoft.Graph;
-using Microsoft.Toolkit.Uwp.Helpers; //Microsoft.Toolkit.Graph.Providers;
-using Microsoft.Toolkit.Uwp.UI.Controls;
-using CommunityToolkit.Authentication;
-using System.Text.Json.Serialization;
-using Newtonsoft.Json;
-using CommunityToolkit.Graph.Extensions;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -48,7 +40,7 @@ namespace GraphTutorial
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             // Get the Graph client from the provider
-            var graphClient = ProviderManager.Instance.GlobalProvider.GetClient(); //.Graph
+            var graphClient = ProviderManager.Instance.GlobalProvider.GetClient();
 
             try
             {
@@ -62,10 +54,10 @@ namespace GraphTutorial
                 var endOfWeek = startOfWeek.AddDays(7);
 
                 var queryOptions = new List<QueryOption>
-        {
-            new QueryOption("startDateTime", startOfWeek.ToString("o")),
-            new QueryOption("endDateTime", endOfWeek.ToString("o"))
-        };
+                {
+                    new QueryOption("startDateTime", startOfWeek.ToString("o")),
+                    new QueryOption("endDateTime", endOfWeek.ToString("o"))
+                };
 
                 // Get the events
                 var events = await graphClient.Me.CalendarView.Request(queryOptions)
@@ -81,9 +73,7 @@ namespace GraphTutorial
                     .Top(50)
                     .GetAsync();
 
-                // TEMPORARY: Show the results as JSON
-                //Events.Text = JsonConvert.SerializeObject(events.CurrentPage);
-                EventList.ItemsSource = events.CurrentPage.ToList();    
+                EventList.ItemsSource = events.CurrentPage.ToList();
             }
             catch (ServiceException ex)
             {

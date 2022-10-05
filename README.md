@@ -12,13 +12,15 @@ languages:
 
 # Microsoft Graph sample UWP app
 
+[![MSBuild](https://github.com/microsoftgraph/msgraph-training-uwp/actions/workflows/msbuild.yml/badge.svg)](https://github.com/microsoftgraph/msgraph-training-uwp/actions/workflows/msbuild.yml) ![License.](https://img.shields.io/badge/license-MIT-green.svg)
+
 This sample demonstrates how to use the Microsoft Graph .NET SDK to access data in Office 365 from UWP apps.
 
 ## Prerequisites
 
 To run the completed project in this folder, you need the following:
 
-- [Visual Studio](https://visualstudio.microsoft.com/vs/) installed on your development machine. If you do not have Visual Studio, visit the previous link for download options. (**Note:** This tutorial was written with Visual Studio 2019 version 16.5.0. The steps in this guide may work with other versions, but that has not been tested.)
+- [Visual Studio](https://visualstudio.microsoft.com/vs/) installed on your development machine. If you do not have Visual Studio, visit the previous link for download options. (**Note:** This tutorial was written with Visual Studio 2022 version 17.3.5. The steps in this guide may work with other versions, but that has not been tested.)
 - Either a personal Microsoft account with a mailbox on Outlook.com, or a Microsoft work or school account.
 
 If you don't have a Microsoft account, there are a couple of options to get a free account:
@@ -34,7 +36,7 @@ If you don't have a Microsoft account, there are a couple of options to get a fr
 
 1. Select **New registration**. On the **Register an application** page, set the values as follows.
 
-    - Set **Name** to `UWP Graph Tutorial`.
+    - Set **Name** to `UWP Graph Sample`.
     - Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**.
     - Under **Redirect URI**, change the dropdown to **Public client (mobile & desktop)**, and set the value to `https://login.microsoftonline.com/common/oauth2/nativeclient`.
 

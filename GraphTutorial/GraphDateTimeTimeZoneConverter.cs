@@ -2,9 +2,9 @@
 // Licensed under the MIT License.
 
 // <ConverterSnippet>
+using System;
 using Microsoft.Graph;
 using Microsoft.Graph.Extensions;
-using System;
 
 namespace GraphTutorial
 {

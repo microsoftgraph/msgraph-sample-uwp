@@ -2,7 +2,7 @@
      Licensed under the MIT License. -->
 
 <!-- <NewEventPageXamlSnippet> -->
-<Page xmlns:wgt="using:CommunityToolkit.Graph.Uwp.Controls" 
+<Page xmlns:wgt="using:CommunityToolkit.Graph.Uwp.Controls"
     x:Class="GraphTutorial.NewEventPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -29,8 +29,8 @@
             <DatePicker Header="End Date" Date="{Binding EndDate, Mode=TwoWay}" Grid.Row="2" />
             <TimePicker Header="End Time" Time="{Binding EndTime, Mode=TwoWay}" Grid.Row="2" Grid.Column="2" />
         </Grid>
-        <TextBox Header="Body" Text="{Binding Body, Mode=TwoWay}" 
-                 AcceptsReturn="True" TextWrapping="Wrap" 
+        <TextBox Header="Body" Text="{Binding Body, Mode=TwoWay}"
+                 AcceptsReturn="True" TextWrapping="Wrap"
                  Height="200" ScrollViewer.VerticalScrollBarVisibility="Auto" />
         <Button Content="Create" Click="CreateEvent" IsEnabled="{Binding IsValid}"/>
         <ProgressRing Name="CreateProgress" Visibility="Collapsed" IsActive="False" />

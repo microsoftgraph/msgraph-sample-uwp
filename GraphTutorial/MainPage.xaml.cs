@@ -1,13 +1,10 @@
-﻿
-using System;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
 
+using CommunityToolkit.Authentication;
+using Microsoft.Identity.Client;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using CommunityToolkit.Authentication;
-using CommunityToolkit.Graph;
-using Microsoft.Toolkit.Uwp.UI.Controls;
-using Microsoft.Toolkit.Uwp.Helpers; //Microsoft.Toolkit.Graph.Providers
-using Microsoft.Identity.Client;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 

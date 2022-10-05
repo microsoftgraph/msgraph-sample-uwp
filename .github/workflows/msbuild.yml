@@ -9,7 +9,7 @@ on:
 
 env:
   # Path to the solution file relative to the root of the project.
-  SOLUTION_FILE_PATH: ./demo
+  SOLUTION_FILE_PATH: ./
 
   # Configuration type to build.
   # You can convert this to a build matrix if you need coverage of multiple configuration types.
@@ -25,10 +25,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    
+
     - name: Copy settings file
       run: |
-        copy ${{env.SOLUTION_FILE_PATH}}\GraphTutorial\OAuth.resw ${{env.SOLUTION_FILE_PATH}}\GraphTutorial\OAuth.resw
+        copy ${{env.SOLUTION_FILE_PATH}}\GraphTutorial\OAuth.resw.example ${{env.SOLUTION_FILE_PATH}}\GraphTutorial\OAuth.resw
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
