@@ -1,0 +1,66 @@
+﻿<!-- Copyright (c) Microsoft Corporation.
+     Licensed under the MIT License. -->
+
+<!-- <MainPageXamlSnippet> -->
+<Page
+    x:Class="GraphTutorial.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GraphTutorial"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:wgt="using:CommunityToolkit.Graph.Uwp.Controls"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <NavigationView
+            x:Name="NavView"
+            IsSettingsVisible="False"
+            ItemInvoked="NavView_ItemInvoked">
+
+            <NavigationView.Header>
+                <wgt:LoginButton
+                    x:Name="Login"
+                    VerticalAlignment="Top"
+                    HorizontalAlignment="Right" />
+            </NavigationView.Header>
+
+            <NavigationView.MenuItems>
+                <NavigationViewItem
+                    Content="Home"
+                    x:Name="Home"
+                    Tag="home">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE80F;"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem
+                    Content="Calendar"
+                    x:Name="Calendar"
+                    Tag="calendar">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE787;"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem
+                    Content="New event"
+                    x:Name="NewEvent"
+                    Tag="newevent">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE710;"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.MenuItems>
+
+            <StackPanel>
+                <controls:InAppNotification
+                    x:Name="Notification"
+                    ShowDismissButton="true" />
+                <Frame x:Name="RootFrame" Margin="24, 0" />
+            </StackPanel>
+        </NavigationView>
+    </Grid>
+    <!-- </MainPageXamlSnippet> -->
+</Page>
