@@ -8,14 +8,14 @@
 
   <Identity
     Name="f9c1d01f-5402-4725-8b5f-b3dc6503264f"
-    Publisher="CN=v-dodaromike"
+    Publisher="CN=contoso"
     Version="1.0.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="f9c1d01f-5402-4725-8b5f-b3dc6503264f" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>GraphTutorial</DisplayName>
-    <PublisherDisplayName>v-dodaromike</PublisherDisplayName>
+    <PublisherDisplayName>contoso</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
