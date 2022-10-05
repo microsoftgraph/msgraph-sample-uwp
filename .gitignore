@@ -177,6 +177,4 @@ FakesAssemblies/
 .vscode/
 
 ## OAuth settings
-
-QSTemp/
-UwpQuickStart.zip
+OAuth.resw
