@@ -12,7 +12,9 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <StackPanel Margin="10" Spacing="10">
-        <TextBox Header="Subject" Text="{Binding Subject, Mode=TwoWay}" />
+        <TextBox
+            Header="Subject"
+            Text="{Binding Subject, Mode=TwoWay}" />
         <TextBlock Text="Attendees"/>
         <wgt:PeoplePicker Name="AttendeePicker" />
         <Grid ColumnSpacing="10" RowSpacing="10">
@@ -24,16 +26,38 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
-            <DatePicker Header="Start Date" Date="{Binding StartDate, Mode=TwoWay}" />
-            <TimePicker Header="Start Time" Time="{Binding StartTime, Mode=TwoWay}" Grid.Column="2" />
-            <DatePicker Header="End Date" Date="{Binding EndDate, Mode=TwoWay}" Grid.Row="2" />
-            <TimePicker Header="End Time" Time="{Binding EndTime, Mode=TwoWay}" Grid.Row="2" Grid.Column="2" />
+            <DatePicker
+                Header="Start Date"
+                Date="{Binding StartDate, Mode=TwoWay}" />
+            <TimePicker
+                Header="Start Time"
+                Time="{Binding StartTime, Mode=TwoWay}"
+                Grid.Column="2" />
+            <DatePicker
+                Header="End Date"
+                Date="{Binding EndDate, Mode=TwoWay}"
+                Grid.Row="2" />
+            <TimePicker
+                Header="End Time"
+                Time="{Binding EndTime, Mode=TwoWay}"
+                Grid.Row="2"
+                Grid.Column="2" />
         </Grid>
-        <TextBox Header="Body" Text="{Binding Body, Mode=TwoWay}"
-                 AcceptsReturn="True" TextWrapping="Wrap"
-                 Height="200" ScrollViewer.VerticalScrollBarVisibility="Auto" />
-        <Button Content="Create" Click="CreateEvent" IsEnabled="{Binding IsValid}"/>
-        <ProgressRing Name="CreateProgress" Visibility="Collapsed" IsActive="False" />
+        <TextBox
+            Header="Body"
+            Text="{Binding Body, Mode=TwoWay}"
+            AcceptsReturn="True"
+            TextWrapping="Wrap"
+            Height="200"
+            ScrollViewer.VerticalScrollBarVisibility="Auto" />
+        <Button
+            Content="Create"
+            Click="CreateEvent"
+            IsEnabled="{Binding IsValid}"/>
+        <ProgressRing
+            Name="CreateProgress"
+            Visibility="Collapsed"
+            IsActive="False" />
     </StackPanel>
 </Page>
 <!-- </NewEventPageXamlSnippet> -->

@@ -15,28 +15,39 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <NavigationView x:Name="NavView"
-        IsSettingsVisible="False"
-        ItemInvoked="NavView_ItemInvoked">
+        <NavigationView
+            x:Name="NavView"
+            IsSettingsVisible="False"
+            ItemInvoked="NavView_ItemInvoked">
 
             <NavigationView.Header>
-                <wgt:LoginButton x:Name="Login"
-                                VerticalAlignment="Top"
-                                HorizontalAlignment="Right" />
+                <wgt:LoginButton
+                    x:Name="Login"
+                    VerticalAlignment="Top"
+                    HorizontalAlignment="Right" />
             </NavigationView.Header>
 
             <NavigationView.MenuItems>
-                <NavigationViewItem Content="Home" x:Name="Home" Tag="home">
+                <NavigationViewItem
+                    Content="Home"
+                    x:Name="Home"
+                    Tag="home">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE80F;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem Content="Calendar" x:Name="Calendar" Tag="calendar">
+                <NavigationViewItem
+                    Content="Calendar"
+                    x:Name="Calendar"
+                    Tag="calendar">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE787;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem Content="New event" x:Name="NewEvent" Tag="newevent">
+                <NavigationViewItem
+                    Content="New event"
+                    x:Name="NewEvent"
+                    Tag="newevent">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE710;"/>
                     </NavigationViewItem.Icon>
@@ -44,7 +55,9 @@
             </NavigationView.MenuItems>
 
             <StackPanel>
-                <controls:InAppNotification x:Name="Notification" ShowDismissButton="true" />
+                <controls:InAppNotification
+                    x:Name="Notification"
+                    ShowDismissButton="true" />
                 <Frame x:Name="RootFrame" Margin="24, 0" />
             </StackPanel>
         </NavigationView>

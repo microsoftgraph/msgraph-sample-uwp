@@ -19,30 +19,32 @@
     <!-- </ResourcesSnippet> -->
 
     <Grid>
-        <controls:DataGrid x:Name="EventList" Grid.Row="1"
-                AutoGenerateColumns="False">
+        <controls:DataGrid
+            x:Name="EventList"
+            Grid.Row="1"
+            AutoGenerateColumns="False">
             <controls:DataGrid.Columns>
                 <controls:DataGridTextColumn
-                        Header="Organizer"
-                        Width="SizeToCells"
-                        Binding="{Binding Organizer.EmailAddress.Name}"
-                        FontSize="20" />
+                    Header="Organizer"
+                    Width="SizeToCells"
+                    Binding="{Binding Organizer.EmailAddress.Name}"
+                    FontSize="20" />
                 <controls:DataGridTextColumn
-                        Header="Subject"
-                        Width="SizeToCells"
-                        Binding="{Binding Subject}"
-                        FontSize="20" />
+                    Header="Subject"
+                    Width="SizeToCells"
+                    Binding="{Binding Subject}"
+                    FontSize="20" />
                 <!-- <BindingSnippet> -->
                 <controls:DataGridTextColumn
-                        Header="Start"
-                        Width="SizeToCells"
-                        Binding="{Binding Start, Converter={StaticResource DateTimeTimeZoneValueConverter}}"
-                        FontSize="20" />
+                    Header="Start"
+                    Width="SizeToCells"
+                    Binding="{Binding Start, Converter={StaticResource DateTimeTimeZoneValueConverter}}"
+                    FontSize="20" />
                 <controls:DataGridTextColumn
-                        Header="End"
-                        Width="SizeToCells"
-                        Binding="{Binding End, Converter={StaticResource DateTimeTimeZoneValueConverter}}"
-                        FontSize="20" />
+                    Header="End"
+                    Width="SizeToCells"
+                    Binding="{Binding End, Converter={StaticResource DateTimeTimeZoneValueConverter}}"
+                    FontSize="20" />
                 <!-- </BindingSnippet> -->
             </controls:DataGrid.Columns>
         </controls:DataGrid>
